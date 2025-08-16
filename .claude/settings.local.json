@@ -8,7 +8,10 @@
       "Bash(pnpm prepublishOnly:*)",
       "Bash(npm whoami:*)",
       "Bash(git init:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git remote add:*)",
+      "Bash(git push:*)",
+      "Bash(npm publish:*)"
     ],
     "deny": [],
     "ask": []
