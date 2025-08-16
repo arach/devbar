@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm build:*)",
+      "Bash(pnpm install:*)",
+      "Bash(rm:*)",
+      "Bash(pnpm add:*)",
+      "Bash(pnpm prepublishOnly:*)",
+      "Bash(npm whoami:*)",
+      "Bash(git init:*)",
+      "Bash(git add:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
