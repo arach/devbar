@@ -49,18 +49,74 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
     return null;
   }
   
-  // Position styles (using inline styles for reliability)
-  const positionStyles = {
-    'bottom-right': { position: 'fixed' as const, bottom: '12px', right: '12px' },
-    'bottom-left': { position: 'fixed' as const, bottom: '12px', left: '12px' },
-    'top-right': { position: 'fixed' as const, top: '12px', right: '12px' },
-    'top-left': { position: 'fixed' as const, top: '12px', left: '12px' },
+  // Position styles for button and panel (offset panel to avoid overlap)
+  const buttonStyles = {
+    'bottom-right': { 
+      position: 'fixed' as const, 
+      bottom: '12px', 
+      right: '12px',
+      backgroundColor: theme === 'light' ? '#ffffff' : '#111827',  // white : gray-900
+      color: theme === 'light' ? '#111827' : '#ffffff',
+      cursor: 'pointer',
+    },
+    'bottom-left': { 
+      position: 'fixed' as const, 
+      bottom: '12px', 
+      left: '12px',
+      backgroundColor: theme === 'light' ? '#ffffff' : '#111827',
+      color: theme === 'light' ? '#111827' : '#ffffff',
+      cursor: 'pointer',
+    },
+    'top-right': { 
+      position: 'fixed' as const, 
+      top: '12px', 
+      right: '12px',
+      backgroundColor: theme === 'light' ? '#ffffff' : '#111827',
+      color: theme === 'light' ? '#111827' : '#ffffff',
+      cursor: 'pointer',
+    },
+    'top-left': { 
+      position: 'fixed' as const, 
+      top: '12px', 
+      left: '12px',
+      backgroundColor: theme === 'light' ? '#ffffff' : '#111827',
+      color: theme === 'light' ? '#111827' : '#ffffff',
+      cursor: 'pointer',
+    },
   };
   
-  // Theme classes
+  // Panel positioned with offset to avoid covering the button
+  const panelStyles = {
+    'bottom-right': { 
+      position: 'fixed' as const, 
+      bottom: '56px', 
+      right: '12px',
+      backgroundColor: theme === 'light' ? '#ffffff' : '#111827', // Solid backgrounds
+    },
+    'bottom-left': { 
+      position: 'fixed' as const, 
+      bottom: '56px', 
+      left: '12px',
+      backgroundColor: theme === 'light' ? '#ffffff' : '#111827',
+    },
+    'top-right': { 
+      position: 'fixed' as const, 
+      top: '56px', 
+      right: '12px',
+      backgroundColor: theme === 'light' ? '#ffffff' : '#111827',
+    },
+    'top-left': { 
+      position: 'fixed' as const, 
+      top: '56px', 
+      left: '12px',
+      backgroundColor: theme === 'light' ? '#ffffff' : '#111827',
+    },
+  };
+  
+  // Theme classes (fully opaque backgrounds)
   const themeClasses = theme === 'light' 
     ? 'bg-white border-gray-300 text-gray-900'
-    : 'bg-gray-900/95 dark:bg-black/95 border-gray-700/50 dark:border-gray-800 text-white';
+    : 'bg-gray-900 dark:bg-black border-gray-700 dark:border-gray-800 text-white';
   
   const activeTabContent = tabs.find(tab => tab.id === activeTab);
   
@@ -71,7 +127,6 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
         onClick={() => setIsCollapsed(!isCollapsed)}
         className={`w-8 h-8 rounded-full
                    ${theme === 'light' ? 'bg-white' : 'bg-gray-900 dark:bg-black'}
-                   backdrop-blur-sm
                    border ${theme === 'light' ? 'border-gray-300' : 'border-gray-700 dark:border-gray-800'}
                    shadow-lg shadow-black/50
                    flex items-center justify-center
@@ -79,14 +134,17 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
                    transition-all duration-300
                    hover:scale-110 active:scale-95
                    z-[9999] ${className}`}
-        style={positionStyles[position]}
+        style={buttonStyles[position]}
         title={isCollapsed ? `Show ${title.toLowerCase()} toolbar` : `Hide ${title.toLowerCase()} toolbar`}
       >
         {customIcon || (
           <Bug 
-            className={`w-4 h-4 transition-transform duration-300 ${
-              isCollapsed ? '' : 'rotate-180'
-            }`}
+            className="w-4 h-4"
+            style={{
+              transition: 'transform 0.3s ease',
+              transform: isCollapsed ? 'rotate(0deg)' : 'rotate(180deg)',
+              color: theme === 'light' ? '#111827' : '#ffffff'  // gray-900 : white
+            }}
             suppressHydrationWarning
             aria-hidden="true"
           />
@@ -97,13 +155,16 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
       {!isCollapsed && (
         <div className={`rounded
                         ${themeClasses}
-                        backdrop-blur-sm
                         border
                         shadow-2xl shadow-black/50
                         z-[9998]
                         overflow-hidden
                         flex flex-col ${className}`}
-             style={{ ...positionStyles[position], width, maxHeight }}>
+             style={{ 
+               ...panelStyles[position], 
+               width, 
+               maxHeight,
+             }}>
           {/* Header */}
           <div className={`flex items-center justify-between px-2 py-1 border-b ${
             theme === 'light' ? 'border-gray-300' : 'border-gray-700/50'
