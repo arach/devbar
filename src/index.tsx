@@ -1,4 +1,4 @@
-import React, { useState, ReactNode } from 'react';
+import React, { useState, useEffect, ReactNode } from 'react';
 import { Bug, X, LucideIcon } from 'lucide-react';
 
 export interface DevToolbarTab {
@@ -35,9 +35,17 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [activeTab, setActiveTab] = useState(defaultTab || tabs[0]?.id || '');
+  const [isVisible, setIsVisible] = useState(false);
   
-  // Hide in production if specified
-  if (hideInProduction && process.env.NODE_ENV !== 'development') {
+  // Only check environment on client side to avoid hydration mismatch
+  useEffect(() => {
+    // Always show in development, hide in production if specified
+    const shouldShow = !hideInProduction || (typeof window !== 'undefined' && process.env.NODE_ENV === 'development');
+    setIsVisible(shouldShow);
+  }, [hideInProduction]);
+  
+  // SSR-safe rendering: return null during SSR, actual content after hydration
+  if (!isVisible) {
     return null;
   }
   
@@ -61,7 +69,7 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
       {/* Bug button - always visible */}
       <button
         onClick={() => setIsCollapsed(!isCollapsed)}
-        className={`fixed ${positionClasses[position].split(' ')[0]} ${positionClasses[position].split(' ')[1]} 
+        className={`fixed ${positionClasses[position]} 
                    w-8 h-8 rounded-full
                    ${theme === 'light' ? 'bg-white' : 'bg-gray-900 dark:bg-black'}
                    backdrop-blur-sm
@@ -115,11 +123,11 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
           {/* Tabs */}
           {tabs.length > 1 && (
             <div className={`flex border-b ${theme === 'light' ? 'border-gray-300' : 'border-gray-700/50'}`}>
-              {tabs.map(({ id, icon: Icon }) => (
+              {tabs.map(({ id, label, icon: Icon }) => (
                 <button
                   key={id}
                   onClick={() => setActiveTab(id)}
-                  className={`flex-1 px-1 py-0.5 text-[10px] font-medium transition-colors
+                  className={`flex-1 flex items-center justify-center gap-1 px-2 py-1 text-[10px] font-medium transition-colors
                     ${activeTab === id
                       ? theme === 'light'
                         ? 'bg-gray-100 text-gray-900 border-b-2 border-blue-500'
@@ -129,7 +137,8 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
                         : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
                     }`}
                 >
-                  <Icon className="w-2.5 h-2.5 mx-auto" />
+                  <Icon className="w-3 h-3" />
+                  <span>{label}</span>
                 </button>
               ))}
             </div>
