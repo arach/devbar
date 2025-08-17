@@ -1,6 +1,6 @@
 {
   "name": "@arach/devbar",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A beautiful, minimal dev toolbar for React applications",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

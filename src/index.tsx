@@ -49,12 +49,12 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
     return null;
   }
   
-  // Position classes
-  const positionClasses = {
-    'bottom-right': 'bottom-3 right-3',
-    'bottom-left': 'bottom-3 left-3',
-    'top-right': 'top-3 right-3',
-    'top-left': 'top-3 left-3',
+  // Position styles (using inline styles for reliability)
+  const positionStyles = {
+    'bottom-right': { position: 'fixed' as const, bottom: '12px', right: '12px' },
+    'bottom-left': { position: 'fixed' as const, bottom: '12px', left: '12px' },
+    'top-right': { position: 'fixed' as const, top: '12px', right: '12px' },
+    'top-left': { position: 'fixed' as const, top: '12px', left: '12px' },
   };
   
   // Theme classes
@@ -69,8 +69,7 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
       {/* Bug button - always visible */}
       <button
         onClick={() => setIsCollapsed(!isCollapsed)}
-        className={`fixed ${positionClasses[position]} 
-                   w-8 h-8 rounded-full
+        className={`w-8 h-8 rounded-full
                    ${theme === 'light' ? 'bg-white' : 'bg-gray-900 dark:bg-black'}
                    backdrop-blur-sm
                    border ${theme === 'light' ? 'border-gray-300' : 'border-gray-700 dark:border-gray-800'}
@@ -80,6 +79,7 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
                    transition-all duration-300
                    hover:scale-110 active:scale-95
                    z-[9999] ${className}`}
+        style={positionStyles[position]}
         title={isCollapsed ? `Show ${title.toLowerCase()} toolbar` : `Hide ${title.toLowerCase()} toolbar`}
       >
         {customIcon || (
@@ -95,7 +95,7 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
       
       {/* Dev toolbar panel */}
       {!isCollapsed && (
-        <div className={`fixed ${positionClasses[position]} rounded
+        <div className={`rounded
                         ${themeClasses}
                         backdrop-blur-sm
                         border
@@ -103,7 +103,7 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
                         z-[9998]
                         overflow-hidden
                         flex flex-col ${className}`}
-             style={{ width, maxHeight }}>
+             style={{ ...positionStyles[position], width, maxHeight }}>
           {/* Header */}
           <div className={`flex items-center justify-between px-2 py-1 border-b ${
             theme === 'light' ? 'border-gray-300' : 'border-gray-700/50'

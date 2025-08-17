@@ -11,9 +11,16 @@
       "Bash(git add:*)",
       "Bash(git remote add:*)",
       "Bash(git push:*)",
-      "Bash(npm publish:*)"
+      "Bash(npm publish:*)",
+      "Bash(npm run dev:*)",
+      "Bash(grep:*)",
+      "Bash(npx tailwindcss:*)",
+      "Bash(curl:*)"
     ],
     "deny": [],
-    "ask": []
+    "ask": [],
+    "additionalDirectories": [
+      "/Users/arach/dev/scout-landing/"
+    ]
   }
 }
