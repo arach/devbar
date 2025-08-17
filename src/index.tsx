@@ -10,7 +10,7 @@ export interface DevToolbarTab {
 
 export interface DevToolbarProps {
   tabs: DevToolbarTab[];
-  position?: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left';
+  position?: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left' | 'pane';
   defaultTab?: string;
   className?: string;
   theme?: 'dark' | 'light' | 'auto';
@@ -19,6 +19,7 @@ export interface DevToolbarProps {
   title?: string;
   width?: string;
   maxHeight?: string;
+  defaultPaneHeight?: string;  // For pane mode
 }
 
 export const DevToolbar: React.FC<DevToolbarProps> = ({
@@ -30,12 +31,15 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
   hideInProduction = true,
   customIcon,
   title = 'Dev',
-  width = '280px',
-  maxHeight = '240px',
+  width = '320px',  // Slightly wider for better content fit
+  maxHeight = '400px',  // Taller to accommodate most content without scrolling
+  defaultPaneHeight = '300px',
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [activeTab, setActiveTab] = useState(defaultTab || tabs[0]?.id || '');
   const [isVisible, setIsVisible] = useState(false);
+  const [paneHeight, setPaneHeight] = useState(defaultPaneHeight);
+  const [isResizing, setIsResizing] = useState(false);
   
   // Only check environment on client side to avoid hydration mismatch
   useEffect(() => {
@@ -44,72 +48,141 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
     setIsVisible(shouldShow);
   }, [hideInProduction]);
   
+  // Handle resize for pane mode
+  useEffect(() => {
+    if (!isResizing) return;
+    
+    const handleMouseMove = (e: MouseEvent) => {
+      const newHeight = window.innerHeight - e.clientY;
+      const minHeight = 100;
+      const maxHeight = window.innerHeight * 0.8;
+      
+      if (newHeight >= minHeight && newHeight <= maxHeight) {
+        setPaneHeight(`${newHeight}px`);
+      }
+    };
+    
+    const handleMouseUp = () => {
+      setIsResizing(false);
+    };
+    
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+    
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isResizing]);
+  
+  // Add ESC key handler
+  useEffect(() => {
+    if (position !== 'pane' || isCollapsed) return;
+    
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsCollapsed(true);
+      }
+    };
+    
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [position, isCollapsed]);
+  
   // SSR-safe rendering: return null during SSR, actual content after hydration
   if (!isVisible) {
     return null;
   }
   
-  // Position styles for button and panel (offset panel to avoid overlap)
-  const buttonStyles = {
+  // Button positioned to overlap corner of panel when open
+  const buttonStyles: Record<string, React.CSSProperties> = {
     'bottom-right': { 
       position: 'fixed' as const, 
-      bottom: '12px', 
-      right: '12px',
+      bottom: isCollapsed ? '12px' : '8px',  // Overlap panel corner when open
+      right: isCollapsed ? '12px' : '8px',
       backgroundColor: theme === 'light' ? '#ffffff' : '#111827',  // white : gray-900
       color: theme === 'light' ? '#111827' : '#ffffff',
       cursor: 'pointer',
+      zIndex: 9999,
+    },
+    'bottom-left': { 
+      position: 'fixed' as const, 
+      bottom: isCollapsed ? '12px' : '8px',
+      left: isCollapsed ? '12px' : '8px',
+      backgroundColor: theme === 'light' ? '#ffffff' : '#111827',
+      color: theme === 'light' ? '#111827' : '#ffffff',
+      cursor: 'pointer',
+      zIndex: 9999,
+    },
+    'top-right': { 
+      position: 'fixed' as const, 
+      top: isCollapsed ? '12px' : '8px',
+      right: isCollapsed ? '12px' : '8px',
+      backgroundColor: theme === 'light' ? '#ffffff' : '#111827',
+      color: theme === 'light' ? '#111827' : '#ffffff',
+      cursor: 'pointer',
+      zIndex: 9999,
+    },
+    'top-left': { 
+      position: 'fixed' as const, 
+      top: isCollapsed ? '12px' : '8px',
+      left: isCollapsed ? '12px' : '8px',
+      backgroundColor: theme === 'light' ? '#ffffff' : '#111827',
+      color: theme === 'light' ? '#111827' : '#ffffff',
+      cursor: 'pointer',
+      zIndex: 9999,
+    },
+    'pane': { 
+      position: 'fixed' as const, 
+      bottom: '12px',
+      right: '12px',
+      backgroundColor: theme === 'light' ? '#ffffff' : '#111827',
+      color: theme === 'light' ? '#111827' : '#ffffff',
+      cursor: 'pointer',
+      zIndex: 9999,
+    },
+  };
+  
+  // Panel positioned at corner with button overlapping
+  const panelStyles: Record<string, React.CSSProperties> = {
+    'bottom-right': { 
+      position: 'fixed' as const, 
+      bottom: '12px', 
+      right: '12px',
+      backgroundColor: theme === 'light' ? '#ffffff' : '#111827', // Solid backgrounds
+      borderRadius: '12px',
     },
     'bottom-left': { 
       position: 'fixed' as const, 
       bottom: '12px', 
       left: '12px',
       backgroundColor: theme === 'light' ? '#ffffff' : '#111827',
-      color: theme === 'light' ? '#111827' : '#ffffff',
-      cursor: 'pointer',
+      borderRadius: '12px',
     },
     'top-right': { 
       position: 'fixed' as const, 
       top: '12px', 
       right: '12px',
       backgroundColor: theme === 'light' ? '#ffffff' : '#111827',
-      color: theme === 'light' ? '#111827' : '#ffffff',
-      cursor: 'pointer',
+      borderRadius: '12px',
     },
     'top-left': { 
       position: 'fixed' as const, 
       top: '12px', 
       left: '12px',
       backgroundColor: theme === 'light' ? '#ffffff' : '#111827',
-      color: theme === 'light' ? '#111827' : '#ffffff',
-      cursor: 'pointer',
+      borderRadius: '12px',
     },
-  };
-  
-  // Panel positioned with offset to avoid covering the button
-  const panelStyles = {
-    'bottom-right': { 
+    'pane': { 
       position: 'fixed' as const, 
-      bottom: '56px', 
-      right: '12px',
-      backgroundColor: theme === 'light' ? '#ffffff' : '#111827', // Solid backgrounds
-    },
-    'bottom-left': { 
-      position: 'fixed' as const, 
-      bottom: '56px', 
-      left: '12px',
+      bottom: isCollapsed ? '-100%' : '0',
+      left: '0',
+      right: '0',
       backgroundColor: theme === 'light' ? '#ffffff' : '#111827',
-    },
-    'top-right': { 
-      position: 'fixed' as const, 
-      top: '56px', 
-      right: '12px',
-      backgroundColor: theme === 'light' ? '#ffffff' : '#111827',
-    },
-    'top-left': { 
-      position: 'fixed' as const, 
-      top: '56px', 
-      left: '12px',
-      backgroundColor: theme === 'light' ? '#ffffff' : '#111827',
+      borderRadius: '0',
+      borderTop: `1px solid ${theme === 'light' ? '#e5e7eb' : '#374151'}`,
+      transition: 'bottom 0.3s ease-in-out',
+      boxShadow: '0 -4px 12px rgba(0, 0, 0, 0.15)',
     },
   };
   
@@ -153,23 +226,46 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
       
       {/* Dev toolbar panel */}
       {!isCollapsed && (
-        <div className={`rounded
-                        ${themeClasses}
-                        border
-                        shadow-2xl shadow-black/50
-                        z-[9998]
-                        overflow-hidden
-                        flex flex-col ${className}`}
+        <div className={`${themeClasses}
+                        ${position !== 'pane' ? 'border shadow-2xl shadow-black/50' : ''}
+                        ${className}`}
              style={{ 
                ...panelStyles[position], 
-               width, 
-               maxHeight,
+               width: position === 'pane' ? '100%' : width, 
+               height: position === 'pane' ? paneHeight : maxHeight,
+               display: 'flex',
+               flexDirection: 'column',
+               overflow: 'hidden',
+               zIndex: 9998,
              }}>
-          {/* Header */}
-          <div className={`flex items-center justify-between px-2 py-1 border-b ${
+          {/* Resize handle for pane mode */}
+          {position === 'pane' && (
+            <div 
+              onMouseDown={() => setIsResizing(true)}
+              style={{
+                height: '5px',
+                cursor: 'ns-resize',
+                backgroundColor: 'transparent',
+                borderBottom: `1px solid ${theme === 'light' ? '#e5e7eb' : '#374151'}`,
+                transition: 'background-color 0.2s',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = theme === 'light' 
+                  ? 'rgba(59, 130, 246, 0.1)' 
+                  : 'rgba(59, 130, 246, 0.2)';
+              }}
+              onMouseLeave={(e) => {
+                if (!isResizing) {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                }
+              }}
+            />
+          )}
+          {/* Header - Fixed height */}
+          <div className={`flex items-center justify-between border-b flex-shrink-0 ${
             theme === 'light' ? 'border-gray-300' : 'border-gray-700/50'
-          }`}>
-            <div className="flex items-center gap-1">
+          }`} style={{ paddingLeft: '12px', paddingRight: '12px', paddingTop: '6px', paddingBottom: '6px', height: '36px' }}>
+            <div className="flex items-center" style={{ gap: '6px' }}>
               {customIcon || (
                 <Bug 
                   className={`w-3 h-3 ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}
@@ -195,22 +291,33 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
             </button>
           </div>
           
-          {/* Tabs */}
+          {/* Tabs - Fixed height when present */}
           {tabs.length > 1 && (
-            <div className={`flex border-b ${theme === 'light' ? 'border-gray-300' : 'border-gray-700/50'}`}>
+            <div className={`flex border-b flex-shrink-0 ${theme === 'light' ? 'border-gray-300' : 'border-gray-700/50'}`} style={{ height: '40px' }}>
               {tabs.map(({ id, label, icon: Icon }) => (
                 <button
                   key={id}
                   onClick={() => setActiveTab(id)}
-                  className={`flex-1 flex items-center justify-center gap-1 px-2 py-1 text-[10px] font-medium transition-colors
-                    ${activeTab === id
-                      ? theme === 'light'
-                        ? 'bg-gray-100 text-gray-900 border-b-2 border-blue-500'
-                        : 'bg-gray-800 text-white border-b-2 border-red-500'
-                      : theme === 'light'
-                        ? 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                        : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
-                    }`}
+                  style={{
+                    flex: 1,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '6px',
+                    padding: '8px 12px',
+                    fontSize: '11px',
+                    fontWeight: 500,
+                    background: activeTab === id 
+                      ? (theme === 'light' ? '#f3f4f6' : '#1f2937')
+                      : 'transparent',
+                    color: activeTab === id
+                      ? (theme === 'light' ? '#111827' : '#ffffff')
+                      : (theme === 'light' ? '#6b7280' : '#9ca3af'),
+                    borderBottom: activeTab === id ? `2px solid ${theme === 'light' ? '#3b82f6' : '#ef4444'}` : 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    transition: 'all 0.15s',
+                  }}
                 >
                   <Icon 
                     className="w-3 h-3"
@@ -223,13 +330,15 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
             </div>
           )}
           
-          {/* Content */}
-          <div className="flex-1 overflow-auto p-2">
-            {activeTabContent && (
-              typeof activeTabContent.content === 'function' 
-                ? activeTabContent.content() 
-                : activeTabContent.content
-            )}
+          {/* Content - Fixed height with scrolling */}
+          <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', minHeight: 0 }}>
+            <div style={{ padding: '16px' }}>
+              {activeTabContent && (
+                typeof activeTabContent.content === 'function' 
+                  ? activeTabContent.content() 
+                  : activeTabContent.content
+              )}
+            </div>
           </div>
         </div>
       )}
@@ -253,13 +362,22 @@ export const DevToolbarSection: React.FC<{
   children: ReactNode;
   className?: string;
 }> = ({ title, children, className = '' }) => (
-  <div className={`space-y-2 ${className}`}>
+  <div style={{ marginBottom: '16px' }} className={className}>
     {title && (
-      <div className="text-[10px] font-mono font-semibold text-gray-400 uppercase">
+      <div style={{ 
+        fontSize: '10px',
+        fontFamily: 'monospace', 
+        fontWeight: 600,
+        textTransform: 'uppercase',
+        marginBottom: '8px',
+        color: '#9ca3af'
+      }}>
         {title}
       </div>
     )}
-    {children}
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+      {children}
+    </div>
   </div>
 );
 
