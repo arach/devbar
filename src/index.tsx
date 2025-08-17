@@ -83,9 +83,13 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
         title={isCollapsed ? `Show ${title.toLowerCase()} toolbar` : `Hide ${title.toLowerCase()} toolbar`}
       >
         {customIcon || (
-          <Bug className={`w-4 h-4 transition-transform duration-300 ${
-            isCollapsed ? '' : 'rotate-180'
-          }`} />
+          <Bug 
+            className={`w-4 h-4 transition-transform duration-300 ${
+              isCollapsed ? '' : 'rotate-180'
+            }`}
+            suppressHydrationWarning
+            aria-hidden="true"
+          />
         )}
       </button>
       
@@ -105,7 +109,13 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
             theme === 'light' ? 'border-gray-300' : 'border-gray-700/50'
           }`}>
             <div className="flex items-center gap-1">
-              {customIcon || <Bug className={`w-3 h-3 ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`} />}
+              {customIcon || (
+                <Bug 
+                  className={`w-3 h-3 ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}
+                  suppressHydrationWarning
+                  aria-hidden="true"
+                />
+              )}
               <h3 className={`font-medium text-[10px] ${
                 theme === 'light' ? 'text-gray-900' : 'text-white'
               }`}>{title}</h3>
@@ -116,7 +126,11 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
                 theme === 'light' ? 'text-gray-600 hover:text-gray-900' : 'text-gray-400 hover:text-white'
               } transition-colors`}
             >
-              <X className="w-3 h-3" />
+              <X 
+                className="w-3 h-3"
+                suppressHydrationWarning
+                aria-hidden="true"
+              />
             </button>
           </div>
           
@@ -137,7 +151,11 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
                         : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
                     }`}
                 >
-                  <Icon className="w-3 h-3" />
+                  <Icon 
+                    className="w-3 h-3"
+                    suppressHydrationWarning
+                    aria-hidden="true"
+                  />
                   <span>{label}</span>
                 </button>
               ))}
