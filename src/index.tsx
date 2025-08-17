@@ -94,51 +94,36 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
     return null;
   }
   
-  // Button positioned to overlap corner of panel when open
+  // Button positioned with consistent spacing
   const buttonStyles: Record<string, React.CSSProperties> = {
     'bottom-right': { 
       position: 'fixed' as const, 
-      bottom: isCollapsed ? '12px' : '8px',  // Overlap panel corner when open
-      right: isCollapsed ? '12px' : '8px',
-      backgroundColor: theme === 'light' ? '#ffffff' : '#111827',  // white : gray-900
-      color: theme === 'light' ? '#111827' : '#ffffff',
-      cursor: 'pointer',
+      bottom: '24px',
+      right: '24px',
       zIndex: 9999,
     },
     'bottom-left': { 
       position: 'fixed' as const, 
-      bottom: isCollapsed ? '12px' : '8px',
-      left: isCollapsed ? '12px' : '8px',
-      backgroundColor: theme === 'light' ? '#ffffff' : '#111827',
-      color: theme === 'light' ? '#111827' : '#ffffff',
-      cursor: 'pointer',
+      bottom: '24px',
+      left: '24px',
       zIndex: 9999,
     },
     'top-right': { 
       position: 'fixed' as const, 
-      top: isCollapsed ? '12px' : '8px',
-      right: isCollapsed ? '12px' : '8px',
-      backgroundColor: theme === 'light' ? '#ffffff' : '#111827',
-      color: theme === 'light' ? '#111827' : '#ffffff',
-      cursor: 'pointer',
+      top: '24px',
+      right: '24px',
       zIndex: 9999,
     },
     'top-left': { 
       position: 'fixed' as const, 
-      top: isCollapsed ? '12px' : '8px',
-      left: isCollapsed ? '12px' : '8px',
-      backgroundColor: theme === 'light' ? '#ffffff' : '#111827',
-      color: theme === 'light' ? '#111827' : '#ffffff',
-      cursor: 'pointer',
+      top: '24px',
+      left: '24px',
       zIndex: 9999,
     },
     'pane': { 
       position: 'fixed' as const, 
-      bottom: '12px',
-      right: '12px',
-      backgroundColor: theme === 'light' ? '#ffffff' : '#111827',
-      color: theme === 'light' ? '#111827' : '#ffffff',
-      cursor: 'pointer',
+      bottom: '24px',
+      right: '24px',
       zIndex: 9999,
     },
   };
@@ -147,29 +132,29 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
   const panelStyles: Record<string, React.CSSProperties> = {
     'bottom-right': { 
       position: 'fixed' as const, 
-      bottom: '12px', 
-      right: '12px',
+      bottom: '24px', 
+      right: '24px',
       backgroundColor: theme === 'light' ? '#ffffff' : '#111827', // Solid backgrounds
       borderRadius: '12px',
     },
     'bottom-left': { 
       position: 'fixed' as const, 
-      bottom: '12px', 
-      left: '12px',
+      bottom: '24px', 
+      left: '24px',
       backgroundColor: theme === 'light' ? '#ffffff' : '#111827',
       borderRadius: '12px',
     },
     'top-right': { 
       position: 'fixed' as const, 
-      top: '12px', 
-      right: '12px',
+      top: '24px', 
+      right: '24px',
       backgroundColor: theme === 'light' ? '#ffffff' : '#111827',
       borderRadius: '12px',
     },
     'top-left': { 
       position: 'fixed' as const, 
-      top: '12px', 
-      left: '12px',
+      top: '24px', 
+      left: '24px',
       backgroundColor: theme === 'light' ? '#ffffff' : '#111827',
       borderRadius: '12px',
     },
@@ -180,7 +165,7 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
       right: '0',
       backgroundColor: theme === 'light' ? '#ffffff' : '#111827',
       borderRadius: '0',
-      borderTop: `1px solid ${theme === 'light' ? '#e5e7eb' : '#374151'}`,
+      borderTop: `0.5px solid ${theme === 'light' ? '#e5e7eb' : '#374151'}`,
       transition: 'bottom 0.3s ease-in-out',
       boxShadow: '0 -4px 12px rgba(0, 0, 0, 0.15)',
     },
@@ -198,25 +183,54 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
       {/* Bug button - always visible */}
       <button
         onClick={() => setIsCollapsed(!isCollapsed)}
-        className={`w-8 h-8 rounded-full
-                   ${theme === 'light' ? 'bg-white' : 'bg-gray-900 dark:bg-black'}
-                   border ${theme === 'light' ? 'border-gray-300' : 'border-gray-700 dark:border-gray-800'}
-                   shadow-lg shadow-black/50
-                   flex items-center justify-center
-                   ${theme === 'light' ? 'text-gray-900 hover:bg-gray-100' : 'text-white hover:bg-gray-800'}
-                   transition-all duration-300
-                   hover:scale-110 active:scale-95
-                   z-[9999] ${className}`}
-        style={buttonStyles[position]}
+        style={{
+          ...buttonStyles[position],
+          width: '48px',
+          height: '48px',
+          borderRadius: '50%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '12px',
+          backgroundColor: theme === 'light' ? '#ffffff' : '#0a0a0a',
+          backgroundImage: theme === 'dark' ? 'linear-gradient(135deg, #0a0a0a, #1a1a1a)' : 'none',
+          border: 'none',
+          outline: 'none',
+          cursor: 'pointer',
+          transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+          boxShadow: theme === 'light' 
+            ? '0 0 0 1px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04), 0 4px 8px rgba(0, 0, 0, 0.04)'
+            : '0 0 0 1px rgba(255, 255, 255, 0.1), 0 2px 4px rgba(0, 0, 0, 0.3), 0 4px 8px rgba(0, 0, 0, 0.3)',
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = 'scale(1.08)';
+          e.currentTarget.style.boxShadow = theme === 'light'
+            ? '0 0 0 1px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.08), 0 8px 16px rgba(0, 0, 0, 0.08)'
+            : '0 0 0 1px rgba(255, 255, 255, 0.15), 0 4px 8px rgba(0, 0, 0, 0.4), 0 8px 16px rgba(0, 0, 0, 0.4)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = 'scale(1)';
+          e.currentTarget.style.boxShadow = theme === 'light'
+            ? '0 0 0 1px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04), 0 4px 8px rgba(0, 0, 0, 0.04)'
+            : '0 0 0 1px rgba(255, 255, 255, 0.1), 0 2px 4px rgba(0, 0, 0, 0.3), 0 4px 8px rgba(0, 0, 0, 0.3)';
+        }}
+        onMouseDown={(e) => {
+          e.currentTarget.style.transform = 'scale(0.95)';
+        }}
+        onMouseUp={(e) => {
+          e.currentTarget.style.transform = 'scale(1)';
+        }}
         title={isCollapsed ? `Show ${title.toLowerCase()} toolbar` : `Hide ${title.toLowerCase()} toolbar`}
+        className={className}
       >
         {customIcon || (
           <Bug 
-            className="w-4 h-4"
             style={{
-              transition: 'transform 0.3s ease',
+              width: '20px',
+              height: '20px',
+              transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
               transform: isCollapsed ? 'rotate(0deg)' : 'rotate(180deg)',
-              color: theme === 'light' ? '#111827' : '#ffffff'  // gray-900 : white
+              color: theme === 'light' ? '#374151' : '#d1d5db',
             }}
             suppressHydrationWarning
             aria-hidden="true"
@@ -246,7 +260,6 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
                 height: '5px',
                 cursor: 'ns-resize',
                 backgroundColor: 'transparent',
-                borderBottom: `1px solid ${theme === 'light' ? '#e5e7eb' : '#374151'}`,
                 transition: 'background-color 0.2s',
               }}
               onMouseEnter={(e) => {
@@ -261,30 +274,57 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
               }}
             />
           )}
-          {/* Header - Fixed height */}
-          <div className={`flex items-center justify-between border-b flex-shrink-0 ${
-            theme === 'light' ? 'border-gray-300' : 'border-gray-700/50'
-          }`} style={{ paddingLeft: '12px', paddingRight: '12px', paddingTop: '6px', paddingBottom: '6px', height: '36px' }}>
+          {/* Header with title bar and close button */}
+          <div style={{ 
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            borderBottom: `1px solid ${theme === 'light' ? '#e5e7eb' : 'rgba(55, 65, 81, 0.5)'}`,
+            paddingLeft: '12px',
+            paddingRight: '8px',
+            paddingTop: '6px',
+            paddingBottom: '6px',
+            height: '34px',
+            flexShrink: 0,
+          }}>
             <div className="flex items-center" style={{ gap: '6px' }}>
               {customIcon || (
                 <Bug 
-                  className={`w-3 h-3 ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}
+                  className={`w-3 h-3 ${theme === 'light' ? 'text-gray-500' : 'text-gray-400'}`}
                   suppressHydrationWarning
                   aria-hidden="true"
                 />
               )}
-              <h3 className={`font-medium text-[10px] ${
-                theme === 'light' ? 'text-gray-900' : 'text-white'
-              }`}>{title}</h3>
+              <h3 className={`font-medium text-[11px] ${
+                theme === 'light' ? 'text-gray-700' : 'text-gray-200'
+              }`} style={{ letterSpacing: '0.2px' }}>{title}</h3>
             </div>
             <button
               onClick={() => setIsCollapsed(true)}
-              className={`${
-                theme === 'light' ? 'text-gray-600 hover:text-gray-900' : 'text-gray-400 hover:text-white'
-              } transition-colors`}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                cursor: 'pointer',
+                padding: '4px',
+                borderRadius: '4px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'all 0.15s ease',
+                color: theme === 'light' ? '#6b7280' : '#9ca3af',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = theme === 'light' ? 'rgba(0, 0, 0, 0.05)' : 'rgba(255, 255, 255, 0.05)';
+                e.currentTarget.style.color = theme === 'light' ? '#111827' : '#f3f4f6';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.color = theme === 'light' ? '#6b7280' : '#9ca3af';
+              }}
+              title="Close toolbar"
             >
               <X 
-                className="w-3 h-3"
+                className="w-3.5 h-3.5"
                 suppressHydrationWarning
                 aria-hidden="true"
               />
@@ -293,7 +333,12 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
           
           {/* Tabs - Fixed height when present */}
           {tabs.length > 1 && (
-            <div className={`flex border-b flex-shrink-0 ${theme === 'light' ? 'border-gray-300' : 'border-gray-700/50'}`} style={{ height: '40px' }}>
+            <div style={{ 
+              display: 'flex',
+              borderBottom: `1px solid ${theme === 'light' ? '#e5e7eb' : 'rgba(55, 65, 81, 0.5)'}`,
+              height: '36px',
+              flexShrink: 0,
+            }}>
               {tabs.map(({ id, label, icon: Icon }) => (
                 <button
                   key={id}
@@ -303,28 +348,30 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    gap: '6px',
-                    padding: '8px 12px',
+                    gap: '4px',
+                    padding: '6px 10px',
                     fontSize: '11px',
                     fontWeight: 500,
                     background: activeTab === id 
-                      ? (theme === 'light' ? '#f3f4f6' : '#1f2937')
+                      ? (theme === 'light' ? '#f9fafb' : '#1f2937')
                       : 'transparent',
                     color: activeTab === id
                       ? (theme === 'light' ? '#111827' : '#ffffff')
                       : (theme === 'light' ? '#6b7280' : '#9ca3af'),
-                    borderBottom: activeTab === id ? `2px solid ${theme === 'light' ? '#3b82f6' : '#ef4444'}` : 'none',
-                    border: 'none',
+                    borderTop: 'none',
+                    borderLeft: 'none',
+                    borderRight: 'none',
+                    borderBottom: activeTab === id ? `2px solid ${theme === 'light' ? '#3b82f6' : '#60a5fa'}` : `2px solid transparent`,
                     cursor: 'pointer',
                     transition: 'all 0.15s',
                   }}
                 >
                   <Icon 
-                    className="w-3 h-3"
+                    className="w-2.5 h-2.5"
                     suppressHydrationWarning
                     aria-hidden="true"
                   />
-                  <span>{label}</span>
+                  <span style={{ textTransform: 'uppercase', letterSpacing: '0.3px' }}>{label}</span>
                 </button>
               ))}
             </div>
@@ -332,7 +379,7 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
           
           {/* Content - Fixed height with scrolling */}
           <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', minHeight: 0 }}>
-            <div style={{ padding: '16px' }}>
+            <div style={{ padding: '12px' }}>
               {activeTabContent && (
                 typeof activeTabContent.content === 'function' 
                   ? activeTabContent.content() 
@@ -362,20 +409,21 @@ export const DevToolbarSection: React.FC<{
   children: ReactNode;
   className?: string;
 }> = ({ title, children, className = '' }) => (
-  <div style={{ marginBottom: '16px' }} className={className}>
+  <div style={{ marginBottom: '12px' }} className={className}>
     {title && (
       <div style={{ 
-        fontSize: '10px',
+        fontSize: '9px',
         fontFamily: 'monospace', 
         fontWeight: 600,
         textTransform: 'uppercase',
-        marginBottom: '8px',
-        color: '#9ca3af'
+        marginBottom: '6px',
+        color: '#9ca3af',
+        letterSpacing: '0.5px'
       }}>
         {title}
       </div>
     )}
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
       {children}
     </div>
   </div>
@@ -389,10 +437,10 @@ export const DevToolbarButton: React.FC<{
   className?: string;
 }> = ({ onClick, variant = 'default', size = 'xs', children, className = '' }) => {
   const variants = {
-    default: 'bg-gray-800 hover:bg-gray-700',
-    success: 'bg-green-800 hover:bg-green-700',
-    warning: 'bg-yellow-800 hover:bg-yellow-700',
-    danger: 'bg-red-800 hover:bg-red-700',
+    default: 'bg-gray-700 hover:bg-gray-600',
+    success: 'bg-green-700 hover:bg-green-600',
+    warning: 'bg-yellow-700 hover:bg-yellow-600',
+    danger: 'bg-red-700 hover:bg-red-600',
   };
   
   const sizes = {
@@ -416,7 +464,7 @@ export const DevToolbarInfo: React.FC<{
   value: string | number | boolean;
   className?: string;
 }> = ({ label, value, className = '' }) => (
-  <div className={`text-[10px] font-mono text-gray-300 ${className}`}>
-    <span className="text-gray-500">{label}:</span> {String(value)}
+  <div className={`text-[9px] font-mono ${className}`} style={{ color: '#e5e7eb' }}>
+    <span style={{ color: '#9ca3af' }}>{label}:</span> {String(value)}
   </div>
 );
