@@ -3,30 +3,15 @@ import path from 'path'
 import DocsClient from './docs-client'
 
 async function loadDocs() {
-  // In GitHub Actions, the working directory is /home/runner/work/devbar/devbar/docs-site
-  // We need to go up one level to find the docs folder
-  const possiblePaths = [
-    path.join(process.cwd(), '..', 'docs'),  // Local development
-    path.join(process.cwd(), '..', '..', 'docs'),  // Possible CI structure
-    path.join(__dirname, '..', '..', '..', 'docs'),  // Alternative
-  ]
+  // Docs are now in the docs-site/docs folder
+  const docsDir = path.join(process.cwd(), 'docs')
   
-  let docsDir = ''
-  for (const testPath of possiblePaths) {
-    if (fs.existsSync(testPath)) {
-      docsDir = testPath
-      console.log(`Found docs at: ${testPath}`)
-      break
-    }
-  }
-  
-  if (!docsDir) {
-    console.error('Could not find docs directory, tried:', possiblePaths)
-    docsDir = path.join(process.cwd(), '..', 'docs')  // Fallback
+  if (!fs.existsSync(docsDir)) {
+    console.error('Could not find docs directory at:', docsDir)
   }
   
   const files = {
-    'index.md': '',  // Changed from README.md to index.md
+    'README.md': '',  // Use README.md which has the comprehensive documentation
     'getting-started.md': '',
     'api-reference.md': '',
     'configuration.md': '',

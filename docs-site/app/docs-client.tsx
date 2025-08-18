@@ -18,7 +18,7 @@ if (typeof window !== 'undefined') {
 const DEMO_URL = process.env.NEXT_PUBLIC_DEMO_URL || 'http://localhost:3000'
 
 const sections = [
-  { id: 'overview', title: 'Overview', icon: Book, file: 'index.md' },  // Changed from README.md to index.md
+  { id: 'overview', title: 'Overview', icon: Book, file: 'README.md' },  // README.md has the comprehensive docs
   { id: 'getting-started', title: 'Getting Started', icon: Rocket, file: 'getting-started.md' },
   { id: 'api-reference', title: 'API Reference', icon: Code, file: 'api-reference.md' },
   { id: 'configuration', title: 'Configuration', icon: Settings, file: 'configuration.md' },
