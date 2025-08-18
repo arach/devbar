@@ -9,6 +9,11 @@ import 'prismjs/components/prism-bash'
 import 'prismjs/components/prism-javascript'
 import 'prismjs/components/prism-typescript'
 
+// Disable Prism's automatic highlighting to prevent hydration issues
+if (typeof window !== 'undefined') {
+  Prism.manual = true
+}
+
 // Configuration
 const DEMO_URL = process.env.NEXT_PUBLIC_DEMO_URL || 'http://localhost:3000'
 
@@ -29,10 +34,6 @@ function CodeBlock({ code, language, theme }: { code: string; language: string; 
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
-
-  useEffect(() => {
-    Prism.highlightAll()
-  }, [code])
 
   return (
     <div className="relative group my-4">
@@ -56,7 +57,7 @@ function CodeBlock({ code, language, theme }: { code: string; language: string; 
           ? 'bg-gray-900' 
           : 'bg-gray-50 border border-gray-200'
       } rounded-lg overflow-x-auto`}>
-        <code className={`language-${language} text-xs leading-relaxed block p-2`}>
+        <code className={`text-xs leading-relaxed block p-2`} data-language={language}>
           {code}
         </code>
       </pre>
@@ -94,15 +95,30 @@ export default function DocsClient({ docs }: { docs: Record<string, string> }) {
     document.head.appendChild(link)
     
     // Re-highlight after theme change
-    setTimeout(() => Prism.highlightAll(), 100)
+    setTimeout(() => {
+      // Manually highlight with proper language classes
+      document.querySelectorAll('code[data-language]').forEach((block) => {
+        const language = block.getAttribute('data-language') || 'javascript'
+        if (!block.classList.contains(`language-${language}`)) {
+          block.classList.add(`language-${language}`)
+          const pre = block.parentElement
+          if (pre && pre.tagName === 'PRE' && !pre.classList.contains(`language-${language}`)) {
+            pre.classList.add(`language-${language}`)
+          }
+        }
+      })
+      Prism.highlightAll()
+    }, 100)
   }, [theme, mounted])
 
   const content = docs[sections.find(s => s.id === activeSection)?.file || 'README.md'] || ''
 
   useEffect(() => {
-    // Re-highlight when content changes
-    setTimeout(() => Prism.highlightAll(), 100)
-  }, [content])
+    // Only highlight after mount to prevent hydration issues
+    if (mounted) {
+      setTimeout(() => Prism.highlightAll(), 100)
+    }
+  }, [content, mounted])
 
   const renderMarkdown = (text: string, theme: 'light' | 'dark', sectionId: string) => {
     // Track if we're inside a list
