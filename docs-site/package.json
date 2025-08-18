@@ -5,8 +5,7 @@
   "scripts": {
     "dev": "next dev --port 3001 --turbopack",
     "build": "next build",
-    "start": "next start --port 3001",
-    "lint": "next lint"
+    "start": "next start --port 3001"
   },
   "dependencies": {
     "@types/prismjs": "^1.26.5",
