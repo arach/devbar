@@ -119,7 +119,22 @@ export default function DocsClient({ docsJson }: { docsJson: string }) {
   useEffect(() => {
     // Only highlight after mount to prevent hydration issues
     if (mounted) {
-      setTimeout(() => Prism.highlightAll(), 100)
+      setTimeout(() => {
+        // Remove existing Prism classes to force re-highlighting
+        document.querySelectorAll('code[data-language]').forEach((block) => {
+          // Remove all token spans that Prism added
+          block.innerHTML = block.textContent || ''
+          // Re-add language class for Prism to detect
+          const language = block.getAttribute('data-language') || 'javascript'
+          block.className = `language-${language}`
+          const pre = block.parentElement
+          if (pre && pre.tagName === 'PRE') {
+            pre.className = `language-${language}`
+          }
+        })
+        // Now highlight all
+        Prism.highlightAll()
+      }, 100)
     }
   }, [content, mounted])
 
