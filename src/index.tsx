@@ -92,7 +92,14 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
   // Only check environment on client side to avoid hydration mismatch
   useEffect(() => {
     // Always show in development, hide in production if specified
-    const shouldShow = !hideInProduction || (typeof window !== 'undefined' && process.env.NODE_ENV === 'development');
+    // Check for development mode using a safer approach
+    const isDevelopment = typeof window !== 'undefined' && 
+      (window.location.hostname === 'localhost' || 
+       window.location.hostname === '127.0.0.1' ||
+       window.location.hostname.startsWith('192.168.') ||
+       window.location.hostname.includes('.local'));
+    
+    const shouldShow = !hideInProduction || isDevelopment;
     setIsVisible(shouldShow);
   }, [hideInProduction]);
   
