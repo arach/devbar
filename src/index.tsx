@@ -65,6 +65,7 @@ export interface DevToolbarProps {
   width?: string;
   maxHeight?: string;
   defaultPaneHeight?: string;  // For pane mode
+  defaultOpen?: boolean;  // Control initial open state
 }
 
 export const DevToolbar: React.FC<DevToolbarProps> = ({
@@ -79,8 +80,9 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
   width = '320px',  // Slightly wider for better content fit
   maxHeight = '400px',  // Taller to accommodate most content without scrolling
   defaultPaneHeight = '300px',
+  defaultOpen = false,
 }) => {
-  const [isCollapsed, setIsCollapsed] = useState(true);
+  const [isCollapsed, setIsCollapsed] = useState(!defaultOpen);
   const [isExpanded, setIsExpanded] = useState(false);
   const [activeTab, setActiveTab] = useState(defaultTab || tabs[0]?.id || '');
   const [isVisible, setIsVisible] = useState(false);
@@ -220,7 +222,6 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
       backgroundColor: theme === 'light' ? '#ffffff' : '#111827',
       borderRadius: '0',
       borderTop: `0.5px solid ${theme === 'light' ? '#e5e7eb' : '#374151'}`,
-      transition: 'bottom 0.3s ease-in-out',
       boxShadow: '0 -4px 12px rgba(0, 0, 0, 0.15)',
     },
   };
@@ -303,7 +304,9 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
                maxWidth: position === 'pane' ? '100%' : (isExpanded ? '1200px' : '600px'),
                height: position === 'pane' ? paneHeight : (isExpanded ? 'min(70vh, 800px)' : maxHeight),
                maxHeight: position === 'pane' ? paneHeight : (isExpanded ? '800px' : maxHeight),
-               transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+               transition: position === 'pane' 
+                 ? 'bottom 0.3s cubic-bezier(0.4, 0, 0.2, 1)' 
+                 : 'width 0.3s cubic-bezier(0.4, 0, 0.2, 1), height 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                display: 'flex',
                flexDirection: 'column',
                overflow: 'hidden',

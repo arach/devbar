@@ -9,6 +9,7 @@ export default function DemoPage() {
   const [pageTheme, setPageTheme] = useState<'light' | 'dark'>('dark')
   const [position, setPosition] = useState<'bottom-right' | 'bottom-left' | 'top-right' | 'top-left' | 'pane'>('bottom-right')
   const [clicks, setClicks] = useState(0)
+  const [isToolbarOpen, setIsToolbarOpen] = useState(false)
 
   const tabs = [
     {
@@ -391,18 +392,30 @@ export default function DemoPage() {
                 Drag to resize • ESC to close
               </p>
             )}
+            <button
+              onClick={() => setIsToolbarOpen(!isToolbarOpen)}
+              className={`mt-4 px-4 py-2 text-xs rounded-lg transition-all ${
+                pageTheme === 'dark' 
+                  ? 'bg-slate-800 hover:bg-slate-700 text-slate-300' 
+                  : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
+              }`}
+            >
+              {isToolbarOpen ? 'Start Closed' : 'Start Open'} on Position Change
+            </button>
           </div>
         </div>
       </div>
 
-      {/* DevToolbar */}
+      {/* DevToolbar - key forces remount on position change to avoid transition */}
       <DevToolbar
+        key={position}
         tabs={tabs}
         position={position}
         theme={theme}
         title="Demo"
         hideInProduction={false}
         defaultPaneHeight="320px"
+        defaultOpen={isToolbarOpen}
       />
     </div>
   )
