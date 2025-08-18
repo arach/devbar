@@ -44,5 +44,8 @@
     "react-dom": "^18.2.0",
     "tsup": "^8.5.0",
     "typescript": "^5.3.3"
+  },
+  "overrides": {
+    "next": "15.4.4"
   }
 }
