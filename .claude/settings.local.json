@@ -29,7 +29,10 @@
       "Bash(npm install:*)",
       "Bash(mkdir:*)",
       "Bash(npm run build:*)",
-      "Bash(mv:*)"
+      "Bash(mv:*)",
+      "Bash(pnpm next:*)",
+      "Bash(pnpm ls:*)",
+      "Bash(node:*)"
     ],
     "deny": [],
     "ask": [],
