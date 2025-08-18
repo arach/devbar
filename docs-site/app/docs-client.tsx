@@ -95,6 +95,25 @@ export default function DocsClient({ docsJson }: { docsJson: string }) {
     link.href = theme === 'dark' 
       ? 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css'
       : 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css'
+    
+    // Wait for stylesheet to load before highlighting
+    link.onload = () => {
+      // Trigger re-highlight after theme loads
+      setTimeout(() => {
+        document.querySelectorAll('code[data-language]').forEach((block) => {
+          const language = block.getAttribute('data-language') || 'javascript'
+          if (!block.classList.contains(`language-${language}`)) {
+            block.classList.add(`language-${language}`)
+            const pre = block.parentElement
+            if (pre && pre.tagName === 'PRE' && !pre.classList.contains(`language-${language}`)) {
+              pre.classList.add(`language-${language}`)
+            }
+          }
+        })
+        Prism.highlightAll()
+      }, 50)
+    }
+    
     document.head.appendChild(link)
     
     // Re-highlight after theme change
@@ -119,6 +138,8 @@ export default function DocsClient({ docsJson }: { docsJson: string }) {
   useEffect(() => {
     // Only highlight after mount to prevent hydration issues
     if (mounted) {
+      // Wait a bit for theme to load if it's the initial mount
+      const delay = document.querySelector('link[data-prism-theme]') ? 100 : 500
       setTimeout(() => {
         // Remove existing Prism classes to force re-highlighting
         document.querySelectorAll('code[data-language]').forEach((block) => {
@@ -134,7 +155,7 @@ export default function DocsClient({ docsJson }: { docsJson: string }) {
         })
         // Now highlight all
         Prism.highlightAll()
-      }, 100)
+      }, delay)
     }
   }, [content, mounted])
 
