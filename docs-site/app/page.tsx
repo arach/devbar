@@ -3,7 +3,27 @@ import path from 'path'
 import DocsClient from './docs-client'
 
 async function loadDocs() {
-  const docsDir = path.join(process.cwd(), '..', 'docs')
+  // In GitHub Actions, the working directory is /home/runner/work/devbar/devbar/docs-site
+  // We need to go up one level to find the docs folder
+  const possiblePaths = [
+    path.join(process.cwd(), '..', 'docs'),  // Local development
+    path.join(process.cwd(), '..', '..', 'docs'),  // Possible CI structure
+    path.join(__dirname, '..', '..', '..', 'docs'),  // Alternative
+  ]
+  
+  let docsDir = ''
+  for (const testPath of possiblePaths) {
+    if (fs.existsSync(testPath)) {
+      docsDir = testPath
+      console.log(`Found docs at: ${testPath}`)
+      break
+    }
+  }
+  
+  if (!docsDir) {
+    console.error('Could not find docs directory, tried:', possiblePaths)
+    docsDir = path.join(process.cwd(), '..', 'docs')  // Fallback
+  }
   
   const files = {
     'README.md': '',
@@ -19,7 +39,7 @@ async function loadDocs() {
       const content = fs.readFileSync(path.join(docsDir, file), 'utf8')
       files[file as keyof typeof files] = content
     } catch (error) {
-      console.error(`Failed to load ${file}:`, error)
+      console.error(`Failed to load ${file} from ${docsDir}:`, error)
       files[file as keyof typeof files] = `# Error\n\nFailed to load ${file}`
     }
   }

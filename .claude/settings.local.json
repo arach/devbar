@@ -34,7 +34,14 @@
       "Bash(pnpm ls:*)",
       "Bash(node:*)",
       "Bash(next build)",
-      "Bash(pnpm list:*)"
+      "Bash(pnpm list:*)",
+      "Bash(npx serve:*)",
+      "Bash(NEXT_PUBLIC_BASE_PATH=\"\" pnpm build)",
+      "Bash(NEXT_PUBLIC_BASE_PATH='/devbar/docs' NEXT_PUBLIC_DEMO_URL='https://arach.github.io/devbar' pnpm build)",
+      "Bash(npx express:*)",
+      "Bash(chmod:*)",
+      "Bash(./test-prod.sh:*)",
+      "Bash(gh run list:*)"
     ],
     "deny": [],
     "ask": [],
