@@ -49,7 +49,7 @@ function App() {
 }
 ```
 
-That's it! The toolbar will appear as a 🐛 bug icon in the bottom-right corner of your app.
+That's it! The toolbar will appear as a bug icon in the bottom-right corner of your app.
 
 ## Quick Links
 

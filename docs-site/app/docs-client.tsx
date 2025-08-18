@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { ChevronRight, Book, Rocket, Code, Settings, Lightbulb, Layers, Copy, Check } from 'lucide-react'
 import Prism from 'prismjs'
 import 'prismjs/components/prism-jsx'
@@ -28,12 +28,25 @@ const sections = [
 
 function CodeBlock({ code, language, theme }: { code: string; language: string; theme: 'light' | 'dark' }) {
   const [copied, setCopied] = useState(false)
+  const codeRef = useRef<HTMLElement>(null)
   
   const handleCopy = () => {
     navigator.clipboard.writeText(code)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
+
+  // Apply syntax highlighting after render
+  useEffect(() => {
+    if (codeRef.current && typeof window !== 'undefined' && Prism) {
+      // Set the text content first to clear any previous highlighting
+      codeRef.current.textContent = code
+      // Add language class
+      codeRef.current.className = `language-${language} text-xs leading-relaxed block p-2`
+      // Apply Prism highlighting
+      Prism.highlightElement(codeRef.current)
+    }
+  }, [code, language])
 
   return (
     <div className="relative group my-4">
@@ -52,12 +65,12 @@ function CodeBlock({ code, language, theme }: { code: string; language: string; 
           <Copy size={14} className={theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} />
         )}
       </button>
-      <pre className={`${
+      <pre className={`language-${language} ${
         theme === 'dark' 
           ? 'bg-gray-900' 
           : 'bg-gray-50 border border-gray-200'
       } rounded-lg overflow-x-auto`}>
-        <code className={`text-xs leading-relaxed block p-2`} data-language={language}>
+        <code ref={codeRef} className={`language-${language} text-xs leading-relaxed block p-2`} data-language={language}>
           {code}
         </code>
       </pre>
@@ -135,29 +148,8 @@ export default function DocsClient({ docsJson }: { docsJson: string }) {
 
   const content = docs[sections.find(s => s.id === activeSection)?.file || 'README.md'] || ''
 
-  useEffect(() => {
-    // Only highlight after mount to prevent hydration issues
-    if (mounted) {
-      // Wait a bit for theme to load if it's the initial mount
-      const delay = document.querySelector('link[data-prism-theme]') ? 100 : 500
-      setTimeout(() => {
-        // Remove existing Prism classes to force re-highlighting
-        document.querySelectorAll('code[data-language]').forEach((block) => {
-          // Remove all token spans that Prism added
-          block.innerHTML = block.textContent || ''
-          // Re-add language class for Prism to detect
-          const language = block.getAttribute('data-language') || 'javascript'
-          block.className = `language-${language}`
-          const pre = block.parentElement
-          if (pre && pre.tagName === 'PRE') {
-            pre.className = `language-${language}`
-          }
-        })
-        // Now highlight all
-        Prism.highlightAll()
-      }, delay)
-    }
-  }, [content, mounted])
+  // Remove the global highlight effect since we're handling it in CodeBlock component
+  // This prevents double processing and corruption of the HTML
 
   const renderMarkdown = (text: string, theme: 'light' | 'dark', sectionId: string) => {
     // Track if we're inside a list
