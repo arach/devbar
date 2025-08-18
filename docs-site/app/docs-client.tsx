@@ -18,7 +18,7 @@ if (typeof window !== 'undefined') {
 const DEMO_URL = process.env.NEXT_PUBLIC_DEMO_URL || 'http://localhost:3000'
 
 const sections = [
-  { id: 'readme', title: 'Overview', icon: Book, file: 'README.md' },
+  { id: 'overview', title: 'Overview', icon: Book, file: 'index.md' },  // Changed from README.md to index.md
   { id: 'getting-started', title: 'Getting Started', icon: Rocket, file: 'getting-started.md' },
   { id: 'api-reference', title: 'API Reference', icon: Code, file: 'api-reference.md' },
   { id: 'configuration', title: 'Configuration', icon: Settings, file: 'configuration.md' },
@@ -66,7 +66,7 @@ function CodeBlock({ code, language, theme }: { code: string; language: string; 
 }
 
 export default function DocsClient({ docsJson }: { docsJson: string }) {
-  const [activeSection, setActiveSection] = useState('readme')
+  const [activeSection, setActiveSection] = useState('overview')  // Changed from 'readme' to 'overview'
   const [theme, setTheme] = useState<'light' | 'dark'>('dark')
   const [mounted, setMounted] = useState(false)
   

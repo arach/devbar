@@ -26,7 +26,7 @@ async function loadDocs() {
   }
   
   const files = {
-    'README.md': '',
+    'index.md': '',  // Changed from README.md to index.md
     'getting-started.md': '',
     'api-reference.md': '',
     'configuration.md': '',
