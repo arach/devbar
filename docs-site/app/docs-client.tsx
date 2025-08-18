@@ -67,9 +67,17 @@ function CodeBlock({ code, language, theme }: { code: string; language: string; 
 export default function DocsClient({ docs }: { docs: Record<string, string> }) {
   const [activeSection, setActiveSection] = useState('readme')
   const [theme, setTheme] = useState<'light' | 'dark'>('dark')
+  const [mounted, setMounted] = useState(false)
   
-  // Load appropriate Prism theme based on current theme
+  // Mark as mounted
   useEffect(() => {
+    setMounted(true)
+  }, [])
+  
+  // Load appropriate Prism theme based on current theme  
+  useEffect(() => {
+    if (!mounted) return
+    
     // Remove any existing theme
     const existingTheme = document.querySelector('link[data-prism-theme]')
     if (existingTheme) {
@@ -87,7 +95,7 @@ export default function DocsClient({ docs }: { docs: Record<string, string> }) {
     
     // Re-highlight after theme change
     setTimeout(() => Prism.highlightAll(), 100)
-  }, [theme])
+  }, [theme, mounted])
 
   const content = docs[sections.find(s => s.id === activeSection)?.file || 'README.md'] || ''
 
@@ -312,16 +320,17 @@ export default function DocsClient({ docs }: { docs: Record<string, string> }) {
   const renderedContent = renderMarkdown(content, theme, activeSection)
   const isArray = Array.isArray(renderedContent)
 
+  // Always render with dark theme initially to prevent flash
   return (
-    <div className={`min-h-screen ${theme === 'dark' ? 'bg-gray-950 text-gray-100' : 'bg-white text-gray-900'}`}>
+    <div className={`min-h-screen ${!mounted || theme === 'dark' ? 'bg-gray-950 text-gray-100' : 'bg-white text-gray-900'}`}>
       <div className="flex">
         {/* Sidebar */}
         <div className={`w-64 h-screen sticky top-0 border-r ${
-          theme === 'dark' ? 'bg-gray-900 border-gray-800' : 'bg-gray-50 border-gray-200'
+          !mounted || theme === 'dark' ? 'bg-gray-900 border-gray-800' : 'bg-gray-50 border-gray-200'
         }`}>
           <div className="p-6">
             <h1 className="text-xl font-bold mb-1">@arach/devbar</h1>
-            <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>v0.2.0</p>
+            <p className={`text-sm ${!mounted || theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>v0.2.0</p>
           </div>
           
           <nav className="px-3">
@@ -333,10 +342,10 @@ export default function DocsClient({ docs }: { docs: Record<string, string> }) {
                   onClick={() => setActiveSection(section.id)}
                   className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg mb-1 transition-colors ${
                     activeSection === section.id
-                      ? theme === 'dark'
+                      ? !mounted || theme === 'dark'
                         ? 'bg-gray-800 text-white'
                         : 'bg-gray-200 text-gray-900'
-                      : theme === 'dark'
+                      : !mounted || theme === 'dark'
                         ? 'hover:bg-gray-800/50 text-gray-400 hover:text-gray-200'
                         : 'hover:bg-gray-100 text-gray-600 hover:text-gray-900'
                   }`}
@@ -355,7 +364,7 @@ export default function DocsClient({ docs }: { docs: Record<string, string> }) {
               target="_blank"
               rel="noopener noreferrer"
               className={`block text-center text-sm py-2 px-4 rounded-lg transition-colors ${
-                theme === 'dark'
+                !mounted || theme === 'dark'
                   ? 'bg-blue-600 hover:bg-blue-500 text-white'
                   : 'bg-blue-500 hover:bg-blue-600 text-white'
               }`}
@@ -365,12 +374,12 @@ export default function DocsClient({ docs }: { docs: Record<string, string> }) {
             <button
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
               className={`w-full mt-2 text-center text-sm py-2 px-4 rounded-lg transition-colors ${
-                theme === 'dark'
+                !mounted || theme === 'dark'
                   ? 'bg-gray-800 hover:bg-gray-700 text-gray-300'
                   : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
               }`}
             >
-              {theme === 'dark' ? '☀️ Light' : '🌙 Dark'}
+              {!mounted || theme === 'dark' ? '☀️ Light' : '🌙 Dark'}
             </button>
           </div>
         </div>
