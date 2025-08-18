@@ -45,6 +45,7 @@ jobs:
           NEXT_PUBLIC_DOCS_URL: https://${{ github.repository_owner }}.github.io/devbar/docs
         run: |
           pnpm install
+          rm -rf .next out
           pnpm build
 
       - name: Build docs site
@@ -54,6 +55,7 @@ jobs:
           NEXT_PUBLIC_DEMO_URL: https://${{ github.repository_owner }}.github.io/devbar
         run: |
           pnpm install
+          rm -rf .next out
           pnpm build
 
       - name: Combine outputs
