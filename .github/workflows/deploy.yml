@@ -38,6 +38,19 @@ jobs:
       - name: Build library
         run: pnpm build
 
+      - name: Build docs site
+        working-directory: ./docs-site
+        env:
+          NEXT_PUBLIC_BASE_PATH: /devbar/docs
+          NEXT_PUBLIC_DEMO_URL: https://${{ github.repository_owner }}.github.io/devbar
+          NEXT_TELEMETRY_DISABLED: 1
+        run: |
+          pnpm install
+          rm -rf .next out
+          echo "Node version: $(node --version)"
+          echo "pnpm version: $(pnpm --version)"
+          pnpm build
+
       - name: Build demo app
         working-directory: ./demo-app
         env:
@@ -50,16 +63,6 @@ jobs:
           echo "Node version: $(node --version)"
           echo "pnpm version: $(pnpm --version)"
           ls -la app/
-          pnpm build
-
-      - name: Build docs site
-        working-directory: ./docs-site
-        env:
-          NEXT_PUBLIC_BASE_PATH: /devbar/docs
-          NEXT_PUBLIC_DEMO_URL: https://${{ github.repository_owner }}.github.io/devbar
-        run: |
-          pnpm install
-          rm -rf .next out
           pnpm build
 
       - name: Combine outputs
