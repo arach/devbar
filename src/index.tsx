@@ -185,7 +185,7 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
       transform: isExpanded ? 'none' : 'none',
       transformOrigin: 'bottom right',
       backgroundColor: theme === 'light' ? '#ffffff' : '#111827', // Solid backgrounds
-      borderRadius: '12px',
+      borderRadius: '16px',
     },
     'bottom-left': { 
       position: 'fixed' as const, 
@@ -194,7 +194,7 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
       transform: isExpanded ? 'none' : 'none',
       transformOrigin: 'bottom left',
       backgroundColor: theme === 'light' ? '#ffffff' : '#111827',
-      borderRadius: '12px',
+      borderRadius: '16px',
     },
     'top-right': { 
       position: 'fixed' as const, 
@@ -203,7 +203,7 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
       transform: isExpanded ? 'none' : 'none',
       transformOrigin: 'top right',
       backgroundColor: theme === 'light' ? '#ffffff' : '#111827',
-      borderRadius: '12px',
+      borderRadius: '16px',
     },
     'top-left': { 
       position: 'fixed' as const, 
@@ -212,7 +212,7 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
       transform: isExpanded ? 'none' : 'none',
       transformOrigin: 'top left',
       backgroundColor: theme === 'light' ? '#ffffff' : '#111827',
-      borderRadius: '12px',
+      borderRadius: '16px',
     },
     'pane': { 
       position: 'fixed' as const, 
@@ -240,13 +240,13 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
         onClick={() => setIsCollapsed(!isCollapsed)}
         style={{
           ...buttonStyles[position],
-          width: '48px',
-          height: '48px',
+          width: '32px',
+          height: '32px',
           borderRadius: '50%',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          padding: '12px',
+          padding: '8px',
           backgroundColor: theme === 'light' ? '#ffffff' : '#0a0a0a',
           backgroundImage: theme === 'dark' ? 'linear-gradient(135deg, #0a0a0a, #1a1a1a)' : 'none',
           border: 'none',
@@ -281,8 +281,8 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
         {customIcon || (
           <Bug 
             style={{
-              width: '20px',
-              height: '20px',
+              width: '16px',
+              height: '16px',
               transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
               transform: isCollapsed ? 'rotate(0deg)' : 'rotate(180deg)',
               color: theme === 'light' ? '#374151' : '#d1d5db',
@@ -300,13 +300,13 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
                         ${className}`}
              style={{ 
                ...panelStyles[position], 
-               width: position === 'pane' ? '100%' : (isExpanded ? 'min(80vw, 1200px)' : width), 
+               width: position === 'pane' ? '100%' : (isExpanded ? '80%' : width), 
                maxWidth: position === 'pane' ? '100%' : (isExpanded ? '1200px' : '600px'),
-               height: position === 'pane' ? paneHeight : (isExpanded ? 'min(70vh, 800px)' : maxHeight),
+               height: position === 'pane' ? paneHeight : (isExpanded ? '70vh' : maxHeight),
                maxHeight: position === 'pane' ? paneHeight : (isExpanded ? '800px' : maxHeight),
                transition: position === 'pane' 
                  ? 'bottom 0.3s cubic-bezier(0.4, 0, 0.2, 1)' 
-                 : 'width 0.3s cubic-bezier(0.4, 0, 0.2, 1), height 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                 : 'width 0.3s cubic-bezier(0.4, 0, 0.2, 1), height 0.3s cubic-bezier(0.4, 0, 0.2, 1), max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1), max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                display: 'flex',
                flexDirection: 'column',
                overflow: 'hidden',
@@ -562,29 +562,76 @@ export const DevToolbarSection: React.FC<{
 
 export const DevToolbarButton: React.FC<{
   onClick: () => void;
-  variant?: 'default' | 'success' | 'warning' | 'danger';
+  variant?: 'default' | 'success' | 'warning' | 'danger' | 'primary';
   size?: 'sm' | 'xs';
   children: ReactNode;
   className?: string;
 }> = ({ onClick, variant = 'default', size = 'xs', children, className = '' }) => {
-  const variants = {
-    default: 'bg-gray-700 hover:bg-gray-600',
-    success: 'bg-green-700 hover:bg-green-600',
-    warning: 'bg-yellow-700 hover:bg-yellow-600',
-    danger: 'bg-red-700 hover:bg-red-600',
+  const getVariantStyles = (variant: string) => {
+    const styles: Record<string, React.CSSProperties> = {
+      default: {
+        background: 'linear-gradient(180deg, #4b5563 0%, #374151 100%)',
+        borderColor: 'rgba(0, 0, 0, 0.2)',
+        boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1)',
+      },
+      primary: {
+        background: 'linear-gradient(180deg, #3b82f6 0%, #2563eb 100%)',
+        borderColor: 'rgba(0, 0, 0, 0.2)',
+        boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 2px rgba(0, 0, 0, 0.1)',
+      },
+      success: {
+        background: 'linear-gradient(180deg, #10b981 0%, #059669 100%)',
+        borderColor: 'rgba(0, 0, 0, 0.2)',
+        boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 2px rgba(0, 0, 0, 0.1)',
+      },
+      warning: {
+        background: 'linear-gradient(180deg, #f59e0b 0%, #d97706 100%)',
+        borderColor: 'rgba(0, 0, 0, 0.2)',
+        boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 2px rgba(0, 0, 0, 0.1)',
+      },
+      danger: {
+        background: 'linear-gradient(180deg, #ef4444 0%, #dc2626 100%)',
+        borderColor: 'rgba(0, 0, 0, 0.2)',
+        boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 2px rgba(0, 0, 0, 0.1)',
+      },
+    };
+    return styles[variant] || styles.default;
   };
-  
-  const sizes = {
-    xs: 'px-1.5 py-0.5',
-    sm: 'px-2 py-1',
-  };
+
+  const baseStyles = getVariantStyles(variant);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isPressed, setIsPressed] = useState(false);
   
   return (
     <button
       onClick={onClick}
-      className={`${variants[variant]} ${sizes[size]} text-white rounded
-                 transition-colors ${className}`}
-      style={typography.button[size]}
+      className={className}
+      style={{
+        ...typography.button[size],
+        ...baseStyles,
+        border: '1px solid',
+        borderRadius: '6px',
+        color: 'white',
+        cursor: 'pointer',
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontWeight: 500,
+        padding: size === 'xs' ? '3px 8px' : '5px 12px',
+        transition: 'all 0.1s ease',
+        opacity: isPressed ? 0.9 : isHovered ? 0.95 : 1,
+        filter: isHovered ? 'brightness(1.1)' : 'brightness(1)',
+        boxShadow: isPressed 
+          ? 'inset 0 1px 2px rgba(0, 0, 0, 0.2)' 
+          : baseStyles.boxShadow,
+      }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => {
+        setIsHovered(false);
+        setIsPressed(false);
+      }}
+      onMouseDown={() => setIsPressed(true)}
+      onMouseUp={() => setIsPressed(false)}
     >
       {children}
     </button>
@@ -598,5 +645,52 @@ export const DevToolbarInfo: React.FC<{
 }> = ({ label, value, className = '' }) => (
   <div style={{ ...typography.info, color: '#e5e7eb' }} className={className}>
     <span style={{ color: '#9ca3af' }}>{label}:</span> {String(value)}
+  </div>
+);
+
+export const DevToolbarToggle: React.FC<{
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+  label?: string;
+  className?: string;
+}> = ({ checked, onChange, label, className = '' }) => (
+  <div style={{ 
+    display: 'flex', 
+    alignItems: 'center', 
+    justifyContent: 'space-between',
+    gap: '8px',
+    ...typography.info 
+  }} className={className}>
+    {label && (
+      <span style={{ color: '#9ca3af', flex: 1 }}>{label}</span>
+    )}
+    <button
+      onClick={() => onChange(!checked)}
+      style={{
+        position: 'relative',
+        display: 'inline-flex',
+        alignItems: 'center',
+        height: '20px',
+        width: '36px',
+        borderRadius: '9999px',
+        backgroundColor: checked ? '#3b82f6' : '#4b5563',
+        transition: 'background-color 0.2s',
+        border: 'none',
+        cursor: 'pointer',
+        padding: 0,
+      }}
+    >
+      <span
+        style={{
+          display: 'inline-block',
+          height: '14px',
+          width: '14px',
+          borderRadius: '50%',
+          backgroundColor: 'white',
+          transition: 'transform 0.2s',
+          transform: checked ? 'translateX(18px)' : 'translateX(3px)',
+        }}
+      />
+    </button>
   </div>
 );

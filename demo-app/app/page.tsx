@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { DevToolbar, DevToolbarSection, DevToolbarButton, DevToolbarInfo } from '@arach/devbar'
+import { DevToolbar, DevToolbarSection, DevToolbarButton, DevToolbarInfo, DevToolbarToggle } from '@arach/devbar'
 import { Layers, Palette, Settings, Info, Activity, Terminal, Database } from 'lucide-react'
 
 export default function DemoPage() {
@@ -10,6 +10,12 @@ export default function DemoPage() {
   const [position, setPosition] = useState<'bottom-right' | 'bottom-left' | 'top-right' | 'top-left' | 'pane'>('bottom-right')
   const [clicks, setClicks] = useState(0)
   const [isToolbarOpen, setIsToolbarOpen] = useState(false)
+  
+  // Theme settings
+  const [animations, setAnimations] = useState(true)
+  const [compactMode, setCompactMode] = useState(false)
+  const [soundEffects, setSoundEffects] = useState(false)
+  const [autoRefresh, setAutoRefresh] = useState(true)
 
   const tabs = [
     {
@@ -26,12 +32,24 @@ export default function DemoPage() {
           </DevToolbarSection>
           
           <DevToolbarSection title="Quick Actions">
-            <div className="flex gap-2">
-              <DevToolbarButton onClick={() => setClicks(0)} variant="warning">
-                Reset Counter
-              </DevToolbarButton>
-              <DevToolbarButton onClick={() => console.log('Hello!')} variant="success">
-                Log Message
+            <div className="flex flex-col gap-2">
+              <div className="flex gap-2">
+                <DevToolbarButton onClick={() => setClicks(c => c + 10)} variant="primary">
+                  Add 10 Clicks
+                </DevToolbarButton>
+                <DevToolbarButton onClick={() => setClicks(0)} variant="danger">
+                  Reset All
+                </DevToolbarButton>
+              </div>
+              <DevToolbarButton 
+                onClick={() => {
+                  console.log('Refreshing data...');
+                  window.location.reload();
+                }} 
+                variant="success"
+                size="sm"
+              >
+                🔄 Refresh Page
               </DevToolbarButton>
             </div>
           </DevToolbarSection>
@@ -43,22 +61,38 @@ export default function DemoPage() {
       label: 'Theme',
       icon: Palette,
       content: (
-        <DevToolbarSection title="Theme Settings">
-          <div className="flex gap-2">
-            <DevToolbarButton 
-              onClick={() => setTheme('light')}
-              variant={theme === 'light' ? 'success' : 'default'}
-            >
-              Light Mode
-            </DevToolbarButton>
-            <DevToolbarButton 
-              onClick={() => setTheme('dark')}
-              variant={theme === 'dark' ? 'success' : 'default'}
-            >
-              Dark Mode
-            </DevToolbarButton>
-          </div>
-        </DevToolbarSection>
+        <div>
+          <DevToolbarSection title="Appearance">
+            <DevToolbarToggle 
+              checked={theme === 'dark'}
+              onChange={(checked) => setTheme(checked ? 'dark' : 'light')}
+              label="Dark Mode"
+            />
+            <DevToolbarToggle 
+              checked={compactMode}
+              onChange={setCompactMode}
+              label="Compact Mode"
+            />
+            <DevToolbarToggle 
+              checked={animations}
+              onChange={setAnimations}
+              label="Animations"
+            />
+          </DevToolbarSection>
+          
+          <DevToolbarSection title="Behavior">
+            <DevToolbarToggle 
+              checked={soundEffects}
+              onChange={setSoundEffects}
+              label="Sound Effects"
+            />
+            <DevToolbarToggle 
+              checked={autoRefresh}
+              onChange={setAutoRefresh}
+              label="Auto Refresh"
+            />
+          </DevToolbarSection>
+        </div>
       )
     },
     {
