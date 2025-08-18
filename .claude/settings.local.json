@@ -32,7 +32,9 @@
       "Bash(mv:*)",
       "Bash(pnpm next:*)",
       "Bash(pnpm ls:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(next build)",
+      "Bash(pnpm list:*)"
     ],
     "deny": [],
     "ask": [],

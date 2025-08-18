@@ -24,7 +24,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
@@ -43,9 +43,13 @@ jobs:
         env:
           NEXT_PUBLIC_BASE_PATH: /devbar
           NEXT_PUBLIC_DOCS_URL: https://${{ github.repository_owner }}.github.io/devbar/docs
+          NEXT_TELEMETRY_DISABLED: 1
         run: |
           pnpm install
           rm -rf .next out
+          echo "Node version: $(node --version)"
+          echo "pnpm version: $(pnpm --version)"
+          ls -la app/
           pnpm build
 
       - name: Build docs site
