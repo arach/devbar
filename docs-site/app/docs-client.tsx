@@ -96,7 +96,7 @@ export default function DocsClient({ docs }: { docs: Record<string, string> }) {
     setTimeout(() => Prism.highlightAll(), 100)
   }, [content])
 
-  const renderMarkdown = (text: string, theme: 'light' | 'dark') => {
+  const renderMarkdown = (text: string, theme: 'light' | 'dark', sectionId: string) => {
     // Track if we're inside a list
     let inList = false
     
@@ -150,7 +150,7 @@ export default function DocsClient({ docs }: { docs: Record<string, string> }) {
       const language = lang || 'javascript'
       codeBlocks.push({
         placeholder,
-        component: <CodeBlock key={blockIndex} code={code.trim()} language={language} theme={theme} />
+        component: <CodeBlock key={`codeblock-${sectionId}-${blockIndex}`} code={code.trim()} language={language} theme={theme} />
       })
       blockIndex++
       return placeholder
@@ -309,7 +309,7 @@ export default function DocsClient({ docs }: { docs: Record<string, string> }) {
     return html
   }
 
-  const renderedContent = renderMarkdown(content, theme)
+  const renderedContent = renderMarkdown(content, theme, activeSection)
   const isArray = Array.isArray(renderedContent)
 
   return (
@@ -382,9 +382,9 @@ export default function DocsClient({ docs }: { docs: Record<string, string> }) {
               {isArray ? (
                 renderedContent.map((item, index) => 
                   typeof item === 'string' ? (
-                    <div key={index} dangerouslySetInnerHTML={{ __html: item }} />
+                    <div key={`content-${index}`} dangerouslySetInnerHTML={{ __html: item }} />
                   ) : (
-                    item
+                    <div key={`codeblock-${index}`}>{item}</div>
                   )
                 )
               ) : (
