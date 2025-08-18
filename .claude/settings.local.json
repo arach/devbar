@@ -27,7 +27,8 @@
       "Bash(mkdir -p /Users/arach/dev/devbar/docs)",
       "Bash(npx create-next-app:*)",
       "Bash(npm install:*)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(npm run build:*)"
     ],
     "deny": [],
     "ask": [],

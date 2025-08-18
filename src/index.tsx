@@ -1,5 +1,5 @@
-import React, { useState, useEffect, ReactNode } from 'react';
-import { Bug, X, Maximize2, Minimize2, LucideIcon } from 'lucide-react';
+import React, { useState, useEffect, ReactNode, ComponentType } from 'react';
+import { Bug, X, Maximize2, Minimize2 } from 'lucide-react';
 
 // Typography system with Inconsolata
 const FONT_FAMILY = '"Inconsolata", "SF Mono", "Monaco", "Fira Code", "Geist Mono", monospace';
@@ -49,7 +49,7 @@ const typography = {
 export interface DevToolbarTab {
   id: string;
   label: string;
-  icon: LucideIcon;
+  icon?: ComponentType<{ size?: number | string; className?: string }>;
   content: ReactNode | (() => ReactNode);
 }
 
@@ -445,7 +445,9 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
               height: '36px',
               flexShrink: 0,
             }}>
-              {tabs.map(({ id, label, icon: Icon }) => (
+              {tabs.map(({ id, label, icon }) => {
+                const Icon = icon;
+                return (
                 <button
                   key={id}
                   onClick={() => setActiveTab(id)}
@@ -503,19 +505,15 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
                     position: 'relative' as const,
                   }}
                 >
-                  <Icon 
-                    style={{ 
-                      width: '10px', 
-                      height: '10px', 
-                      strokeWidth: 1.5,
-                      transition: 'transform 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-                    }}
-                    suppressHydrationWarning
-                    aria-hidden="true"
-                  />
+                  {Icon && (
+                    <Icon 
+                      size={10}
+                      className="devbar-icon"
+                    />
+                  )}
                   <span>{label}</span>
                 </button>
-              ))}
+              )})}
             </div>
           )}
           
@@ -539,7 +537,7 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
 export const useDevToolbarTab = (
   id: string,
   label: string,
-  icon: LucideIcon,
+  icon: ComponentType<{ size?: number | string; className?: string }> | undefined,
   content: ReactNode | (() => ReactNode)
 ): DevToolbarTab => {
   return { id, label, icon, content };

@@ -44,8 +44,8 @@ jobs:
           NEXT_PUBLIC_BASE_PATH: /devbar
           NEXT_PUBLIC_DOCS_URL: https://${{ github.repository_owner }}.github.io/devbar/docs
         run: |
-          npm install
-          npm run build
+          pnpm install
+          pnpm build
 
       - name: Build docs site
         working-directory: ./docs-site
@@ -53,8 +53,8 @@ jobs:
           NEXT_PUBLIC_BASE_PATH: /devbar/docs
           NEXT_PUBLIC_DEMO_URL: https://${{ github.repository_owner }}.github.io/devbar
         run: |
-          npm install
-          npm run build
+          pnpm install
+          pnpm build
 
       - name: Combine outputs
         run: |
