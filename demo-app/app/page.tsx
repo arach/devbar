@@ -4,6 +4,9 @@ import { useState } from 'react'
 import { DevToolbar, DevToolbarSection, DevToolbarButton, DevToolbarInfo, DevToolbarToggle } from '@arach/devbar'
 import { Layers, Palette, Settings, Info, Activity, Terminal, Database } from 'lucide-react'
 
+// Configuration
+const DOCS_URL = process.env.NEXT_PUBLIC_DOCS_URL || 'http://localhost:3001'
+
 export default function DemoPage() {
   const [theme, setTheme] = useState<'light' | 'dark'>('dark')
   const [pageTheme, setPageTheme] = useState<'light' | 'dark'>('dark')
@@ -186,6 +189,22 @@ export default function DemoPage() {
     <div className={`min-h-screen transition-colors duration-300 ${
       pageTheme === 'dark' ? 'bg-black' : 'bg-gray-50'
     }`}>
+      {/* Top navigation */}
+      <div className="absolute top-4 right-4 z-20">
+        <a
+          href={DOCS_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`text-xs px-3 py-1.5 rounded-full transition-all ${
+            pageTheme === 'dark'
+              ? 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'
+              : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+          }`}
+        >
+          Docs →
+        </a>
+      </div>
+
       {/* Subtle gradient overlay */}
       <div className="absolute inset-0 overflow-hidden">
         <div className={`absolute -top-40 -right-40 w-80 h-80 rounded-full mix-blend-multiply filter blur-3xl animate-pulse ${

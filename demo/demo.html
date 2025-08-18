@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DevToolbar React Demo</title>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  
+  <!-- Load DevToolbar from dist -->
+  <script src="../dist/index.js"></script>
+  
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+    const { DevToolbar, useDevToolbarTab, DevToolbarSection, DevToolbarButton, DevToolbarInfo } = window.DevToolbar || {};
+    
+    // Icons (simplified as emojis for demo)
+    const LayersIcon = () => <span>📚</span>;
+    const PaletteIcon = () => <span>🎨</span>;
+    const SettingsIcon = () => <span>⚙️</span>;
+    const InfoIcon = () => <span>ℹ️</span>;
+    
+    function DemoApp() {
+      const [theme, setTheme] = useState('dark');
+      const [count, setCount] = useState(0);
+      const [position, setPosition] = useState('bottom-right');
+      
+      // Get position from URL params
+      useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const pos = params.get('position');
+        if (pos) {
+          setPosition(pos);
+        }
+      }, []);
+      
+      const tabs = [
+        {
+          id: 'overview',
+          label: 'Overview',
+          icon: LayersIcon,
+          content: (
+            <DevToolbarSection title="App State">
+              <DevToolbarInfo label="Theme" value={theme} />
+              <DevToolbarInfo label="Counter" value={count} />
+              <DevToolbarInfo label="Position" value={position} />
+              <div style={{ marginTop: '12px' }}>
+                <DevToolbarButton onClick={() => setCount(c => c + 1)}>
+                  Increment Counter
+                </DevToolbarButton>
+              </div>
+            </DevToolbarSection>
+          )
+        },
+        {
+          id: 'theme',
+          label: 'Theme',
+          icon: PaletteIcon,
+          content: (
+            <DevToolbarSection title="Theme Settings">
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <DevToolbarButton 
+                  onClick={() => setTheme('light')}
+                  variant={theme === 'light' ? 'success' : 'default'}
+                >
+                  Light
+                </DevToolbarButton>
+                <DevToolbarButton 
+                  onClick={() => setTheme('dark')}
+                  variant={theme === 'dark' ? 'success' : 'default'}
+                >
+                  Dark
+                </DevToolbarButton>
+              </div>
+              <div style={{ marginTop: '12px', padding: '12px', backgroundColor: 'rgba(0,0,0,0.2)', borderRadius: '8px' }}>
+                <p style={{ fontSize: '11px', color: '#9ca3af' }}>
+                  Current theme: <strong>{theme}</strong>
+                </p>
+              </div>
+            </DevToolbarSection>
+          )
+        },
+        {
+          id: 'settings',
+          label: 'Settings',
+          icon: SettingsIcon,
+          content: (
+            <div>
+              <DevToolbarSection title="Position">
+                <select 
+                  value={position} 
+                  onChange={(e) => setPosition(e.target.value)}
+                  style={{ 
+                    width: '100%', 
+                    padding: '6px', 
+                    fontSize: '12px',
+                    backgroundColor: 'rgba(0,0,0,0.3)',
+                    color: 'white',
+                    border: '1px solid rgba(255,255,255,0.2)',
+                    borderRadius: '4px'
+                  }}
+                >
+                  <option value="bottom-right">Bottom Right</option>
+                  <option value="bottom-left">Bottom Left</option>
+                  <option value="top-right">Top Right</option>
+                  <option value="top-left">Top Left</option>
+                  <option value="pane">Pane (DevTools)</option>
+                </select>
+              </DevToolbarSection>
+              <DevToolbarSection title="Info">
+                <p style={{ fontSize: '11px', color: '#9ca3af' }}>
+                  This is a demo of the @arach/devbar component.
+                  Try changing the position or theme!
+                </p>
+              </DevToolbarSection>
+            </div>
+          )
+        },
+        {
+          id: 'about',
+          label: 'About',
+          icon: InfoIcon,
+          content: (
+            <DevToolbarSection title="About DevToolbar">
+              <div style={{ fontSize: '11px', color: '#9ca3af', lineHeight: '1.5' }}>
+                <p style={{ marginBottom: '8px' }}>
+                  A minimal, beautiful development toolbar for React apps.
+                </p>
+                <p style={{ marginBottom: '8px' }}>
+                  Features:
+                </p>
+                <ul style={{ paddingLeft: '16px', listStyle: 'disc' }}>
+                  <li>Multiple positioning modes</li>
+                  <li>Chrome DevTools-style pane</li>
+                  <li>Resizable height</li>
+                  <li>Theme support</li>
+                  <li>Tab interface</li>
+                </ul>
+              </div>
+            </DevToolbarSection>
+          )
+        }
+      ];
+      
+      return (
+        <div className="min-h-screen p-8">
+          <div className="max-w-4xl mx-auto">
+            <div className="bg-white/95 dark:bg-gray-900/95 backdrop-blur rounded-2xl shadow-2xl p-8">
+              <h1 className="text-4xl font-bold mb-4 text-gray-900 dark:text-white">
+                DevToolbar Demo
+              </h1>
+              <p className="text-lg text-gray-600 dark:text-gray-400 mb-8">
+                Interactive demonstration of the @arach/devbar component
+              </p>
+              
+              <div className="grid gap-6 md:grid-cols-2">
+                <div className="p-6 bg-gray-100 dark:bg-gray-800 rounded-lg">
+                  <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
+                    Current State
+                  </h2>
+                  <div className="space-y-2 text-gray-700 dark:text-gray-300">
+                    <p>Position: <strong>{position}</strong></p>
+                    <p>Theme: <strong>{theme}</strong></p>
+                    <p>Counter: <strong>{count}</strong></p>
+                  </div>
+                </div>
+                
+                <div className="p-6 bg-gray-100 dark:bg-gray-800 rounded-lg">
+                  <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
+                    Instructions
+                  </h2>
+                  <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+                    <li>• Look for the bug icon (🐛) in the {position}</li>
+                    <li>• Click it to open the toolbar</li>
+                    <li>• Try the different tabs</li>
+                    <li>• Change position in Settings tab</li>
+                    {position === 'pane' && <li>• Drag the top edge to resize!</li>}
+                  </ul>
+                </div>
+              </div>
+              
+              <div className="mt-8 flex gap-4">
+                <button 
+                  onClick={() => setCount(c => c + 1)}
+                  className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+                >
+                  Increment Counter: {count}
+                </button>
+                <a 
+                  href="index.html"
+                  className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition inline-block"
+                >
+                  Back to Menu
+                </a>
+              </div>
+            </div>
+          </div>
+          
+          {DevToolbar && (
+            <DevToolbar
+              tabs={tabs}
+              position={position}
+              theme={theme}
+              title="Demo Dev"
+              hideInProduction={false}
+              defaultPaneHeight="350px"
+            />
+          )}
+        </div>
+      );
+    }
+    
+    // Mount the app
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<DemoApp />);
+  </script>
+</body>
+</html>

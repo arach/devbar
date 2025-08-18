@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DevToolbar Demo - @arach/devbar</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+    .gradient-bg {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    .demo-card {
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.95);
+    }
+    @media (prefers-color-scheme: dark) {
+      .demo-card {
+        background: rgba(17, 24, 39, 0.95);
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen gradient-bg flex items-center justify-center p-8">
+  <div class="demo-card rounded-2xl shadow-2xl p-8 max-w-4xl w-full">
+    <div class="mb-8">
+      <h1 class="text-4xl font-bold mb-2 text-gray-900 dark:text-white">
+        @arach/devbar
+      </h1>
+      <p class="text-lg text-gray-600 dark:text-gray-400">
+        A beautiful, minimal development toolbar for React applications
+      </p>
+    </div>
+
+    <div class="grid gap-6 md:grid-cols-2">
+      <div class="space-y-4">
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Features</h2>
+        <ul class="space-y-2 text-gray-700 dark:text-gray-300">
+          <li class="flex items-start">
+            <span class="text-green-500 mr-2">✓</span>
+            <span>Multiple positioning modes (corners + pane)</span>
+          </li>
+          <li class="flex items-start">
+            <span class="text-green-500 mr-2">✓</span>
+            <span>Chrome DevTools-style bottom pane</span>
+          </li>
+          <li class="flex items-start">
+            <span class="text-green-500 mr-2">✓</span>
+            <span>Resizable height with drag handle</span>
+          </li>
+          <li class="flex items-start">
+            <span class="text-green-500 mr-2">✓</span>
+            <span>Light/Dark theme support</span>
+          </li>
+          <li class="flex items-start">
+            <span class="text-green-500 mr-2">✓</span>
+            <span>Tab-based interface</span>
+          </li>
+          <li class="flex items-start">
+            <span class="text-green-500 mr-2">✓</span>
+            <span>Zero dependencies (except React)</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="space-y-4">
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Try It Out</h2>
+        <div class="space-y-3">
+          <button onclick="loadDemo('bottom-right')" class="w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
+            Bottom Right (Default)
+          </button>
+          <button onclick="loadDemo('bottom-left')" class="w-full px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition">
+            Bottom Left
+          </button>
+          <button onclick="loadDemo('top-right')" class="w-full px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">
+            Top Right
+          </button>
+          <button onclick="loadDemo('top-left')" class="w-full px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition">
+            Top Left
+          </button>
+          <button onclick="loadDemo('pane')" class="w-full px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">
+            Pane Mode (DevTools Style)
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-8 p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
+      <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Installation</h3>
+      <code class="block bg-gray-900 text-green-400 p-3 rounded text-sm">
+        npm install @arach/devbar
+      </code>
+    </div>
+
+    <div class="mt-4 text-center text-sm text-gray-600 dark:text-gray-400">
+      <p>Click any button above to load the React demo</p>
+      <p class="mt-2">
+        <a href="https://github.com/arach/devbar" class="text-blue-500 hover:underline">
+          View on GitHub
+        </a>
+      </p>
+    </div>
+  </div>
+
+  <script>
+    function loadDemo(position) {
+      window.location.href = `demo.html?position=${position}`;
+    }
+  </script>
+</body>
+</html>
