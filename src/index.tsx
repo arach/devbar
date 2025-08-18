@@ -228,8 +228,8 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
   
   // Theme classes (fully opaque backgrounds)
   const themeClasses = theme === 'light' 
-    ? 'bg-white border-gray-300 text-gray-900'
-    : 'bg-gray-900 dark:bg-black border-gray-700 dark:border-gray-800 text-white';
+    ? 'bg-white text-gray-900'
+    : 'bg-gray-900 dark:bg-black text-white';
   
   const activeTabContent = tabs.find(tab => tab.id === activeTab);
   
@@ -296,7 +296,7 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
       {/* Dev toolbar panel */}
       {!isCollapsed && (
         <div className={`${themeClasses}
-                        ${position !== 'pane' ? 'border shadow-2xl shadow-black/50' : ''}
+                        ${position !== 'pane' ? 'shadow-2xl shadow-black/50' : ''}
                         ${className}`}
              style={{ 
                ...panelStyles[position], 
@@ -311,6 +311,9 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
                flexDirection: 'column',
                overflow: 'hidden',
                zIndex: 9998,
+               border: position !== 'pane' 
+                 ? `1px solid ${theme === 'light' ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.1)'}`
+                 : 'none',
              }}>
           {/* Resize handle for pane mode */}
           {position === 'pane' && (
