@@ -1,5 +1,50 @@
 import React, { useState, useEffect, ReactNode } from 'react';
-import { Bug, X, LucideIcon } from 'lucide-react';
+import { Bug, X, Maximize2, Minimize2, LucideIcon } from 'lucide-react';
+
+// Typography system with Inconsolata
+const FONT_FAMILY = '"Inconsolata", "SF Mono", "Monaco", "Fira Code", "Geist Mono", monospace';
+
+const typography = {
+  title: {
+    fontFamily: FONT_FAMILY,
+    fontSize: '10px',
+    fontWeight: 600,
+    letterSpacing: '0.5px',
+    textTransform: 'uppercase' as const,
+  },
+  tab: {
+    fontFamily: FONT_FAMILY,
+    fontSize: '10px',
+    fontWeight: 500,
+    letterSpacing: '0.3px',
+    textTransform: 'uppercase' as const,
+  },
+  sectionTitle: {
+    fontFamily: FONT_FAMILY,
+    fontSize: '11px',
+    fontWeight: 600,
+    letterSpacing: '0.5px',
+    textTransform: 'uppercase' as const,
+  },
+  info: {
+    fontFamily: FONT_FAMILY,
+    fontSize: '10px',
+    fontWeight: 400,
+    lineHeight: 1.4,
+  },
+  button: {
+    xs: {
+      fontFamily: FONT_FAMILY,
+      fontSize: '11px',
+      fontWeight: 500,
+    },
+    sm: {
+      fontFamily: FONT_FAMILY,
+      fontSize: '12px',
+      fontWeight: 500,
+    },
+  },
+} as const;
 
 export interface DevToolbarTab {
   id: string;
@@ -36,6 +81,7 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
   defaultPaneHeight = '300px',
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
   const [activeTab, setActiveTab] = useState(defaultTab || tabs[0]?.id || '');
   const [isVisible, setIsVisible] = useState(false);
   const [paneHeight, setPaneHeight] = useState(defaultPaneHeight);
@@ -134,6 +180,8 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
       position: 'fixed' as const, 
       bottom: '24px', 
       right: '24px',
+      transform: isExpanded ? 'none' : 'none',
+      transformOrigin: 'bottom right',
       backgroundColor: theme === 'light' ? '#ffffff' : '#111827', // Solid backgrounds
       borderRadius: '12px',
     },
@@ -141,6 +189,8 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
       position: 'fixed' as const, 
       bottom: '24px', 
       left: '24px',
+      transform: isExpanded ? 'none' : 'none',
+      transformOrigin: 'bottom left',
       backgroundColor: theme === 'light' ? '#ffffff' : '#111827',
       borderRadius: '12px',
     },
@@ -148,6 +198,8 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
       position: 'fixed' as const, 
       top: '24px', 
       right: '24px',
+      transform: isExpanded ? 'none' : 'none',
+      transformOrigin: 'top right',
       backgroundColor: theme === 'light' ? '#ffffff' : '#111827',
       borderRadius: '12px',
     },
@@ -155,6 +207,8 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
       position: 'fixed' as const, 
       top: '24px', 
       left: '24px',
+      transform: isExpanded ? 'none' : 'none',
+      transformOrigin: 'top left',
       backgroundColor: theme === 'light' ? '#ffffff' : '#111827',
       borderRadius: '12px',
     },
@@ -245,8 +299,11 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
                         ${className}`}
              style={{ 
                ...panelStyles[position], 
-               width: position === 'pane' ? '100%' : width, 
-               height: position === 'pane' ? paneHeight : maxHeight,
+               width: position === 'pane' ? '100%' : (isExpanded ? 'min(80vw, 1200px)' : width), 
+               maxWidth: position === 'pane' ? '100%' : (isExpanded ? '1200px' : '600px'),
+               height: position === 'pane' ? paneHeight : (isExpanded ? 'min(70vh, 800px)' : maxHeight),
+               maxHeight: position === 'pane' ? paneHeight : (isExpanded ? '800px' : maxHeight),
+               transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                display: 'flex',
                flexDirection: 'column',
                overflow: 'hidden',
@@ -280,49 +337,91 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
             alignItems: 'center',
             justifyContent: 'space-between',
             borderBottom: `1px solid ${theme === 'light' ? '#e5e7eb' : 'rgba(55, 65, 81, 0.5)'}`,
-            paddingLeft: '12px',
-            paddingRight: '8px',
-            paddingTop: '6px',
-            paddingBottom: '6px',
-            height: '34px',
+            paddingLeft: '10px',
+            paddingRight: '6px',
+            paddingTop: '4px',
+            paddingBottom: '4px',
+            height: '28px',
             flexShrink: 0,
           }}>
             <h3 style={{ 
-              fontSize: '11px',
-              fontWeight: 500,
-              letterSpacing: '0.2px',
-              color: theme === 'light' ? '#374151' : '#f3f4f6'
+              ...typography.title,
+              color: theme === 'light' ? '#374151' : '#e5e7eb'
             }}>{title}</h3>
-            <button
-              onClick={() => setIsCollapsed(true)}
+            <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+              {position !== 'pane' && (
+                <button
+                  onClick={() => setIsExpanded(!isExpanded)}
+                  style={{
+                    background: 'transparent',
+                    border: 'none',
+                    cursor: 'pointer',
+                    width: '24px',
+                    height: '24px',
+                    padding: '5px',
+                    borderRadius: '4px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    transition: 'all 0.15s ease',
+                    color: theme === 'light' ? '#9ca3af' : '#6b7280',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = theme === 'light' ? 'rgba(0, 0, 0, 0.08)' : 'rgba(255, 255, 255, 0.08)';
+                    e.currentTarget.style.color = theme === 'light' ? '#374151' : '#e5e7eb';
+                    e.currentTarget.style.transform = 'scale(1.1)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                    e.currentTarget.style.color = theme === 'light' ? '#9ca3af' : '#6b7280';
+                    e.currentTarget.style.transform = 'scale(1)';
+                  }}
+                  title={isExpanded ? "Collapse toolbar" : "Expand toolbar"}
+                  aria-label={isExpanded ? "Collapse toolbar" : "Expand toolbar"}
+                >
+                  {isExpanded ? (
+                    <Minimize2 style={{ width: '14px', height: '14px' }} />
+                  ) : (
+                    <Maximize2 style={{ width: '14px', height: '14px' }} />
+                  )}
+                </button>
+              )}
+              <button
+                onClick={() => setIsCollapsed(true)}
               style={{
                 background: 'transparent',
                 border: 'none',
                 cursor: 'pointer',
-                padding: '4px',
+                width: '24px',
+                height: '24px',
+                padding: '5px',
                 borderRadius: '4px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 transition: 'all 0.15s ease',
-                color: theme === 'light' ? '#6b7280' : '#9ca3af',
+                color: theme === 'light' ? '#9ca3af' : '#6b7280',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = theme === 'light' ? 'rgba(0, 0, 0, 0.05)' : 'rgba(255, 255, 255, 0.05)';
-                e.currentTarget.style.color = theme === 'light' ? '#111827' : '#f3f4f6';
+                e.currentTarget.style.backgroundColor = theme === 'light' ? 'rgba(0, 0, 0, 0.08)' : 'rgba(255, 255, 255, 0.08)';
+                e.currentTarget.style.color = theme === 'light' ? '#374151' : '#e5e7eb';
+                e.currentTarget.style.transform = 'scale(1.1)';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.backgroundColor = 'transparent';
-                e.currentTarget.style.color = theme === 'light' ? '#6b7280' : '#9ca3af';
+                e.currentTarget.style.color = theme === 'light' ? '#9ca3af' : '#6b7280';
+                e.currentTarget.style.transform = 'scale(1)';
               }}
               title="Close toolbar"
+              aria-label="Close toolbar"
             >
               <X 
-                className="w-3.5 h-3.5"
+                style={{ width: '14px', height: '14px' }}
                 suppressHydrationWarning
                 aria-hidden="true"
               />
             </button>
+            </div>
           </div>
           
           {/* Tabs - Fixed height when present */}
@@ -337,6 +436,36 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
                 <button
                   key={id}
                   onClick={() => setActiveTab(id)}
+                  onMouseEnter={(e) => {
+                    if (activeTab !== id) {
+                      e.currentTarget.style.background = theme === 'light' 
+                        ? 'rgba(243, 244, 246, 0.9)' 
+                        : 'rgba(55, 65, 81, 0.8)';
+                      e.currentTarget.style.backdropFilter = 'blur(12px)';
+                      e.currentTarget.style.color = theme === 'light' ? '#111827' : '#ffffff';
+                      e.currentTarget.style.transform = 'translateY(-1px)';
+                      e.currentTarget.style.boxShadow = theme === 'light'
+                        ? 'inset 0 1px 3px rgba(0, 0, 0, 0.05)'
+                        : 'inset 0 1px 3px rgba(255, 255, 255, 0.05)';
+                      const icon = e.currentTarget.querySelector('svg');
+                      if (icon) {
+                        (icon as SVGSVGElement).style.transform = 'scale(1.15) rotate(5deg)';
+                      }
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (activeTab !== id) {
+                      e.currentTarget.style.background = 'transparent';
+                      e.currentTarget.style.backdropFilter = 'none';
+                      e.currentTarget.style.color = theme === 'light' ? '#6b7280' : '#9ca3af';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = 'none';
+                      const icon = e.currentTarget.querySelector('svg');
+                      if (icon) {
+                        (icon as SVGSVGElement).style.transform = 'scale(1) rotate(0deg)';
+                      }
+                    }
+                  }}
                   style={{
                     flex: 1,
                     display: 'flex',
@@ -344,8 +473,7 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
                     justifyContent: 'center',
                     gap: '4px',
                     padding: '6px 10px',
-                    fontSize: '11px',
-                    fontWeight: 500,
+                    ...typography.tab,
                     background: activeTab === id 
                       ? (theme === 'light' ? '#f9fafb' : '#1f2937')
                       : 'transparent',
@@ -357,15 +485,22 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
                     borderRight: 'none',
                     borderBottom: activeTab === id ? `2px solid ${theme === 'light' ? '#3b82f6' : '#60a5fa'}` : `2px solid transparent`,
                     cursor: 'pointer',
-                    transition: 'all 0.15s',
+                    transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                    transform: 'translateY(0)',
+                    position: 'relative' as const,
                   }}
                 >
                   <Icon 
-                    className="w-2.5 h-2.5"
+                    style={{ 
+                      width: '10px', 
+                      height: '10px', 
+                      strokeWidth: 1.5,
+                      transition: 'transform 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                    }}
                     suppressHydrationWarning
                     aria-hidden="true"
                   />
-                  <span style={{ textTransform: 'uppercase', letterSpacing: '0.3px' }}>{label}</span>
+                  <span>{label}</span>
                 </button>
               ))}
             </div>
@@ -406,18 +541,14 @@ export const DevToolbarSection: React.FC<{
   <div style={{ marginBottom: '12px' }} className={className}>
     {title && (
       <div style={{ 
-        fontSize: '9px',
-        fontFamily: 'monospace', 
-        fontWeight: 600,
-        textTransform: 'uppercase',
+        ...typography.sectionTitle,
         marginBottom: '6px',
-        color: '#9ca3af',
-        letterSpacing: '0.5px'
+        color: '#9ca3af'
       }}>
         {title}
       </div>
     )}
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
       {children}
     </div>
   </div>
@@ -438,8 +569,8 @@ export const DevToolbarButton: React.FC<{
   };
   
   const sizes = {
-    xs: 'px-1.5 py-0.5 text-[10px]',
-    sm: 'px-2 py-1 text-[11px]',
+    xs: 'px-1.5 py-0.5',
+    sm: 'px-2 py-1',
   };
   
   return (
@@ -447,6 +578,7 @@ export const DevToolbarButton: React.FC<{
       onClick={onClick}
       className={`${variants[variant]} ${sizes[size]} text-white rounded
                  transition-colors ${className}`}
+      style={typography.button[size]}
     >
       {children}
     </button>
@@ -458,7 +590,7 @@ export const DevToolbarInfo: React.FC<{
   value: string | number | boolean;
   className?: string;
 }> = ({ label, value, className = '' }) => (
-  <div style={{ fontSize: '8px', fontFamily: 'monospace', color: '#e5e7eb', lineHeight: '1.3' }} className={className}>
+  <div style={{ ...typography.info, color: '#e5e7eb' }} className={className}>
     <span style={{ color: '#9ca3af' }}>{label}:</span> {String(value)}
   </div>
 );
