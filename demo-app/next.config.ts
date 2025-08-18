@@ -7,6 +7,10 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
+  // Disable error overlay in production
+  productionBrowserSourceMaps: false,
+  // Skip trailing slash redirect
+  skipTrailingSlashRedirect: true,
 };
 
 export default nextConfig;
