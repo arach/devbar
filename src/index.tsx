@@ -7,40 +7,40 @@ const FONT_FAMILY = '"Inconsolata", "SF Mono", "Monaco", "Fira Code", "Geist Mon
 const typography = {
   title: {
     fontFamily: FONT_FAMILY,
-    fontSize: '10px',
+    fontSize: '0.7rem',
     fontWeight: 600,
-    letterSpacing: '0.5px',
+    letterSpacing: '0.05em',
     textTransform: 'uppercase' as const,
   },
   tab: {
     fontFamily: FONT_FAMILY,
-    fontSize: '10px',
+    fontSize: '0.7rem',
     fontWeight: 500,
-    letterSpacing: '0.3px',
+    letterSpacing: '0.03em',
     textTransform: 'uppercase' as const,
   },
   sectionTitle: {
     fontFamily: FONT_FAMILY,
-    fontSize: '11px',
+    fontSize: '0.75rem',
     fontWeight: 600,
-    letterSpacing: '0.5px',
+    letterSpacing: '0.05em',
     textTransform: 'uppercase' as const,
   },
   info: {
     fontFamily: FONT_FAMILY,
-    fontSize: '10px',
+    fontSize: '0.7rem',
     fontWeight: 400,
     lineHeight: 1.4,
   },
   button: {
     xs: {
       fontFamily: FONT_FAMILY,
-      fontSize: '11px',
+      fontSize: '0.75rem',
       fontWeight: 500,
     },
     sm: {
       fontFamily: FONT_FAMILY,
-      fontSize: '12px',
+      fontSize: '0.8rem',
       fontWeight: 500,
     },
   },
@@ -543,13 +543,14 @@ export const DevToolbarSection: React.FC<{
   title?: string; 
   children: ReactNode;
   className?: string;
-}> = ({ title, children, className = '' }) => (
+  theme?: 'light' | 'dark';
+}> = ({ title, children, className = '', theme = 'dark' }) => (
   <div style={{ marginBottom: '12px' }} className={className}>
     {title && (
       <div style={{ 
         ...typography.sectionTitle,
         marginBottom: '6px',
-        color: '#9ca3af'
+        color: theme === 'light' ? '#6b7280' : '#9ca3af'
       }}>
         {title}
       </div>
@@ -570,29 +571,29 @@ export const DevToolbarButton: React.FC<{
   const getVariantStyles = (variant: string) => {
     const styles: Record<string, React.CSSProperties> = {
       default: {
-        background: 'linear-gradient(180deg, #4b5563 0%, #374151 100%)',
-        borderColor: 'rgba(0, 0, 0, 0.2)',
-        boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1)',
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        border: '1px solid rgba(118, 75, 162, 0.3)',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
       },
       primary: {
-        background: 'linear-gradient(180deg, #3b82f6 0%, #2563eb 100%)',
-        borderColor: 'rgba(0, 0, 0, 0.2)',
-        boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 2px rgba(0, 0, 0, 0.1)',
+        background: 'linear-gradient(135deg, #667eea 0%, #4c6ef5 100%)',
+        border: '1px solid rgba(76, 110, 245, 0.3)',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
       },
       success: {
-        background: 'linear-gradient(180deg, #10b981 0%, #059669 100%)',
-        borderColor: 'rgba(0, 0, 0, 0.2)',
-        boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 2px rgba(0, 0, 0, 0.1)',
+        background: 'linear-gradient(135deg, #56ab2f 0%, #10b981 100%)',
+        border: '1px solid rgba(16, 185, 129, 0.3)',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
       },
       warning: {
-        background: 'linear-gradient(180deg, #f59e0b 0%, #d97706 100%)',
-        borderColor: 'rgba(0, 0, 0, 0.2)',
-        boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 2px rgba(0, 0, 0, 0.1)',
+        background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+        border: '1px solid rgba(245, 87, 108, 0.3)',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
       },
       danger: {
-        background: 'linear-gradient(180deg, #ef4444 0%, #dc2626 100%)',
-        borderColor: 'rgba(0, 0, 0, 0.2)',
-        boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 2px rgba(0, 0, 0, 0.1)',
+        background: 'linear-gradient(135deg, #fa709a 0%, #f5576c 100%)',
+        border: '1px solid rgba(245, 87, 108, 0.3)',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
       },
     };
     return styles[variant] || styles.default;
@@ -609,7 +610,6 @@ export const DevToolbarButton: React.FC<{
       style={{
         ...typography.button[size],
         ...baseStyles,
-        border: '1px solid',
         borderRadius: '6px',
         color: 'white',
         cursor: 'pointer',
@@ -617,12 +617,14 @@ export const DevToolbarButton: React.FC<{
         alignItems: 'center',
         justifyContent: 'center',
         fontWeight: 500,
-        padding: size === 'xs' ? '3px 8px' : '5px 12px',
+        padding: size === 'xs' ? '4px 10px' : '6px 14px',
         transition: 'all 0.1s ease',
         opacity: isPressed ? 0.9 : isHovered ? 0.95 : 1,
         filter: isHovered ? 'brightness(1.1)' : 'brightness(1)',
         boxShadow: isPressed 
-          ? 'inset 0 1px 2px rgba(0, 0, 0, 0.2)' 
+          ? 'inset 0 2px 4px rgba(0, 0, 0, 0.15)' 
+          : isHovered
+          ? '0 4px 8px rgba(0, 0, 0, 0.15)'
           : baseStyles.boxShadow,
       }}
       onMouseEnter={() => setIsHovered(true)}
@@ -642,9 +644,13 @@ export const DevToolbarInfo: React.FC<{
   label: string;
   value: string | number | boolean;
   className?: string;
-}> = ({ label, value, className = '' }) => (
-  <div style={{ ...typography.info, color: '#e5e7eb' }} className={className}>
-    <span style={{ color: '#9ca3af' }}>{label}:</span> {String(value)}
+  theme?: 'light' | 'dark';
+}> = ({ label, value, className = '', theme = 'dark' }) => (
+  <div style={{ 
+    ...typography.info, 
+    color: theme === 'light' ? '#374151' : '#e5e7eb' 
+  }} className={className}>
+    <span style={{ color: theme === 'light' ? '#6b7280' : '#9ca3af' }}>{label}:</span> {String(value)}
   </div>
 );
 
@@ -653,7 +659,8 @@ export const DevToolbarToggle: React.FC<{
   onChange: (checked: boolean) => void;
   label?: string;
   className?: string;
-}> = ({ checked, onChange, label, className = '' }) => (
+  theme?: 'light' | 'dark';
+}> = ({ checked, onChange, label, className = '', theme = 'dark' }) => (
   <div style={{ 
     display: 'flex', 
     alignItems: 'center', 
@@ -662,7 +669,7 @@ export const DevToolbarToggle: React.FC<{
     ...typography.info 
   }} className={className}>
     {label && (
-      <span style={{ color: '#9ca3af', flex: 1 }}>{label}</span>
+      <span style={{ color: theme === 'light' ? '#6b7280' : '#9ca3af', flex: 1 }}>{label}</span>
     )}
     <button
       onClick={() => onChange(!checked)}

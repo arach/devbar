@@ -24,32 +24,29 @@ export default function DemoPage() {
       icon: Layers,
       content: (
         <div>
-          <DevToolbarSection title="Demo Stats">
-            <DevToolbarInfo label="Theme" value={theme} />
-            <DevToolbarInfo label="Position" value={position} />
-            <DevToolbarInfo label="Button Clicks" value={clicks} />
-            <DevToolbarInfo label="Timestamp" value={new Date().toLocaleTimeString()} />
+          <DevToolbarSection title="Demo Stats" theme={theme}>
+            <DevToolbarInfo label="Theme" value={theme} theme={theme} />
+            <DevToolbarInfo label="Position" value={position} theme={theme} />
+            <DevToolbarInfo label="Button Clicks" value={clicks} theme={theme} />
+            <DevToolbarInfo label="Timestamp" value={new Date().toLocaleTimeString()} theme={theme} />
           </DevToolbarSection>
           
-          <DevToolbarSection title="Quick Actions">
-            <div className="flex flex-col gap-2">
-              <div className="flex gap-2">
-                <DevToolbarButton onClick={() => setClicks(c => c + 10)} variant="primary">
-                  Add 10 Clicks
-                </DevToolbarButton>
-                <DevToolbarButton onClick={() => setClicks(0)} variant="danger">
-                  Reset All
-                </DevToolbarButton>
-              </div>
+          <DevToolbarSection title="Quick Actions" theme={theme}>
+            <div className="flex gap-2 flex-wrap">
+              <DevToolbarButton onClick={() => setClicks(c => c + 10)} variant="primary">
+                +10 Clicks
+              </DevToolbarButton>
+              <DevToolbarButton onClick={() => setClicks(0)} variant="danger">
+                Reset
+              </DevToolbarButton>
               <DevToolbarButton 
                 onClick={() => {
                   console.log('Refreshing data...');
                   window.location.reload();
                 }} 
                 variant="success"
-                size="sm"
               >
-                🔄 Refresh Page
+                🔄 Refresh
               </DevToolbarButton>
             </div>
           </DevToolbarSection>
@@ -62,34 +59,39 @@ export default function DemoPage() {
       icon: Palette,
       content: (
         <div>
-          <DevToolbarSection title="Appearance">
+          <DevToolbarSection title="Appearance" theme={theme}>
             <DevToolbarToggle 
               checked={theme === 'dark'}
               onChange={(checked) => setTheme(checked ? 'dark' : 'light')}
               label="Dark Mode"
+              theme={theme}
             />
             <DevToolbarToggle 
               checked={compactMode}
               onChange={setCompactMode}
               label="Compact Mode"
+              theme={theme}
             />
             <DevToolbarToggle 
               checked={animations}
               onChange={setAnimations}
               label="Animations"
+              theme={theme}
             />
           </DevToolbarSection>
           
-          <DevToolbarSection title="Behavior">
+          <DevToolbarSection title="Behavior" theme={theme}>
             <DevToolbarToggle 
               checked={soundEffects}
               onChange={setSoundEffects}
               label="Sound Effects"
+              theme={theme}
             />
             <DevToolbarToggle 
               checked={autoRefresh}
               onChange={setAutoRefresh}
               label="Auto Refresh"
+              theme={theme}
             />
           </DevToolbarSection>
         </div>
@@ -100,11 +102,11 @@ export default function DemoPage() {
       label: 'Settings',
       icon: Settings,
       content: (
-        <DevToolbarSection title="Configuration">
-          <DevToolbarInfo label="Version" value="0.2.0" />
-          <DevToolbarInfo label="React" value="19.1.0" />
-          <DevToolbarInfo label="Next.js" value="15.4.6" />
-          <DevToolbarInfo label="Build" value="Production" />
+        <DevToolbarSection title="Configuration" theme={theme}>
+          <DevToolbarInfo label="Version" value="0.2.0" theme={theme} />
+          <DevToolbarInfo label="React" value="19.1.0" theme={theme} />
+          <DevToolbarInfo label="Next.js" value="15.4.6" theme={theme} />
+          <DevToolbarInfo label="Build" value="Production" theme={theme} />
         </DevToolbarSection>
       )
     },
@@ -113,12 +115,12 @@ export default function DemoPage() {
       label: 'Console',
       icon: Terminal,
       content: (
-        <DevToolbarSection title="Activity Log">
-          <div className="font-mono text-xs space-y-1">
-            <div className="text-gray-400">[{new Date().toLocaleTimeString()}] Page loaded</div>
-            <div className="text-blue-400">[{new Date().toLocaleTimeString()}] Theme: {theme}</div>
-            <div className="text-green-400">[{new Date().toLocaleTimeString()}] Position: {position}</div>
-            <div className="text-yellow-400">[{new Date().toLocaleTimeString()}] Clicks: {clicks}</div>
+        <DevToolbarSection title="Activity Log" theme={theme}>
+          <div style={{ fontFamily: 'monospace', fontSize: '0.7rem', lineHeight: 1.4 }}>
+            <div style={{ color: theme === 'light' ? '#6b7280' : '#9ca3af' }}>[{new Date().toLocaleTimeString()}] Page loaded</div>
+            <div style={{ color: theme === 'light' ? '#2563eb' : '#60a5fa' }}>[{new Date().toLocaleTimeString()}] Theme: {theme}</div>
+            <div style={{ color: theme === 'light' ? '#059669' : '#10b981' }}>[{new Date().toLocaleTimeString()}] Position: {position}</div>
+            <div style={{ color: theme === 'light' ? '#d97706' : '#fbbf24' }}>[{new Date().toLocaleTimeString()}] Clicks: {clicks}</div>
           </div>
         </DevToolbarSection>
       )
@@ -128,11 +130,11 @@ export default function DemoPage() {
       label: 'Performance',
       icon: Activity,
       content: (
-        <DevToolbarSection title="Metrics">
-          <DevToolbarInfo label="FPS" value="60" />
-          <DevToolbarInfo label="Memory" value="12.3 MB" />
-          <DevToolbarInfo label="CPU" value="2%" />
-          <DevToolbarInfo label="Network" value="Idle" />
+        <DevToolbarSection title="Metrics" theme={theme}>
+          <DevToolbarInfo label="FPS" value="60" theme={theme} />
+          <DevToolbarInfo label="Memory" value="12.3 MB" theme={theme} />
+          <DevToolbarInfo label="CPU" value="2%" theme={theme} />
+          <DevToolbarInfo label="Network" value="Idle" theme={theme} />
         </DevToolbarSection>
       )
     },
