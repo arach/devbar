@@ -50,5 +50,8 @@ async function loadDocs() {
 export default async function DocsPage() {
   const docs = await loadDocs()
   
-  return <DocsClient docs={docs} />
+  // Pass docs as a JSON string to avoid RSC serialization issues
+  const docsJson = JSON.stringify(docs)
+  
+  return <DocsClient docsJson={docsJson} />
 }

@@ -65,10 +65,13 @@ function CodeBlock({ code, language, theme }: { code: string; language: string; 
   )
 }
 
-export default function DocsClient({ docs }: { docs: Record<string, string> }) {
+export default function DocsClient({ docsJson }: { docsJson: string }) {
   const [activeSection, setActiveSection] = useState('readme')
   const [theme, setTheme] = useState<'light' | 'dark'>('dark')
   const [mounted, setMounted] = useState(false)
+  
+  // Parse the JSON string back to object
+  const docs = JSON.parse(docsJson) as Record<string, string>
   
   // Mark as mounted
   useEffect(() => {
