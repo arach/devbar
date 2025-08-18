@@ -28,7 +28,8 @@
       "Bash(npx create-next-app:*)",
       "Bash(npm install:*)",
       "Bash(mkdir:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(mv:*)"
     ],
     "deny": [],
     "ask": [],

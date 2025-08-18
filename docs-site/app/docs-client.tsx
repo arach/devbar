@@ -1,6 +1,6 @@
+'use client'
+
 import { useState, useEffect } from 'react'
-import Head from 'next/head'
-import Link from 'next/link'
 import { ChevronRight, Book, Rocket, Code, Settings, Lightbulb, Layers, Copy, Check } from 'lucide-react'
 import Prism from 'prismjs'
 import 'prismjs/themes/prism-tomorrow.css'
@@ -57,27 +57,11 @@ function CodeBlock({ code, language }: { code: string; language: string }) {
   )
 }
 
-export default function DocsPage() {
+export default function DocsClient({ docs }: { docs: Record<string, string> }) {
   const [activeSection, setActiveSection] = useState('readme')
-  const [content, setContent] = useState('')
   const [theme, setTheme] = useState<'light' | 'dark'>('dark')
 
-  useEffect(() => {
-    // Load markdown content
-    const loadContent = async () => {
-      const section = sections.find(s => s.id === activeSection)
-      if (section) {
-        try {
-          const response = await fetch(`/api/docs?file=${section.file}`)
-          const text = await response.text()
-          setContent(text)
-        } catch (error) {
-          console.error('Failed to load documentation:', error)
-        }
-      }
-    }
-    loadContent()
-  }, [activeSection])
+  const content = docs[sections.find(s => s.id === activeSection)?.file || 'README.md'] || ''
 
   useEffect(() => {
     // Re-highlight when content changes
@@ -281,12 +265,6 @@ export default function DocsPage() {
 
   return (
     <div className={`min-h-screen ${theme === 'dark' ? 'bg-gray-950 text-gray-100' : 'bg-white text-gray-900'}`}>
-      <Head>
-        <title>@arach/devbar Documentation</title>
-        <meta name="description" content="Documentation for @arach/devbar - Beautiful development toolbar for React" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
       <div className="flex">
         {/* Sidebar */}
         <div className={`w-64 h-screen sticky top-0 border-r ${
