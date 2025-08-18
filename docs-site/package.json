@@ -5,7 +5,11 @@
   "scripts": {
     "dev": "next dev --port 3001 --turbopack",
     "build": "next build",
-    "start": "next start --port 3001"
+    "build:local": "NEXT_PUBLIC_BASE_PATH='' next build",
+    "build:prod": "NEXT_PUBLIC_BASE_PATH='/devbar/docs' next build",
+    "start": "next start --port 3001",
+    "serve:local": "serve out -l 3001",
+    "serve:prod": "node serve-prod.js"
   },
   "dependencies": {
     "@types/prismjs": "^1.26.5",
