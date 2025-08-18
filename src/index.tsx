@@ -287,18 +287,12 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
             height: '34px',
             flexShrink: 0,
           }}>
-            <div className="flex items-center" style={{ gap: '6px' }}>
-              {customIcon || (
-                <Bug 
-                  className={`w-3 h-3 ${theme === 'light' ? 'text-gray-500' : 'text-gray-400'}`}
-                  suppressHydrationWarning
-                  aria-hidden="true"
-                />
-              )}
-              <h3 className={`font-medium text-[11px] ${
-                theme === 'light' ? 'text-gray-700' : 'text-gray-200'
-              }`} style={{ letterSpacing: '0.2px' }}>{title}</h3>
-            </div>
+            <h3 style={{ 
+              fontSize: '11px',
+              fontWeight: 500,
+              letterSpacing: '0.2px',
+              color: theme === 'light' ? '#374151' : '#f3f4f6'
+            }}>{title}</h3>
             <button
               onClick={() => setIsCollapsed(true)}
               style={{
@@ -464,7 +458,7 @@ export const DevToolbarInfo: React.FC<{
   value: string | number | boolean;
   className?: string;
 }> = ({ label, value, className = '' }) => (
-  <div className={`text-[9px] font-mono ${className}`} style={{ color: '#e5e7eb' }}>
+  <div style={{ fontSize: '8px', fontFamily: 'monospace', color: '#e5e7eb', lineHeight: '1.3' }} className={className}>
     <span style={{ color: '#9ca3af' }}>{label}:</span> {String(value)}
   </div>
 );
