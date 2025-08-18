@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import { ChevronRight, Book, Rocket, Code, Settings, Lightbulb, Layers, Copy, Check } from 'lucide-react'
 import Prism from 'prismjs'
-import 'prismjs/themes/prism-tomorrow.css'
 import 'prismjs/components/prism-jsx'
 import 'prismjs/components/prism-tsx'
 import 'prismjs/components/prism-bash'
@@ -22,7 +21,7 @@ const sections = [
   { id: 'advanced', title: 'Advanced', icon: Layers, file: 'advanced.md' },
 ]
 
-function CodeBlock({ code, language }: { code: string; language: string }) {
+function CodeBlock({ code, language, theme }: { code: string; language: string; theme: 'light' | 'dark' }) {
   const [copied, setCopied] = useState(false)
   
   const handleCopy = () => {
@@ -39,16 +38,24 @@ function CodeBlock({ code, language }: { code: string; language: string }) {
     <div className="relative group my-4">
       <button
         onClick={handleCopy}
-        className="absolute right-2 top-2 p-1.5 rounded-md bg-gray-800 hover:bg-gray-700 opacity-0 group-hover:opacity-100 transition-opacity"
+        className={`absolute right-2 top-2 p-1.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity ${
+          theme === 'dark' 
+            ? 'bg-gray-800 hover:bg-gray-700' 
+            : 'bg-gray-200 hover:bg-gray-300'
+        }`}
         aria-label="Copy code"
       >
         {copied ? (
           <Check size={14} className="text-green-400" />
         ) : (
-          <Copy size={14} className="text-gray-400" />
+          <Copy size={14} className={theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} />
         )}
       </button>
-      <pre className="bg-gray-900 text-gray-100 rounded-lg overflow-x-auto">
+      <pre className={`${
+        theme === 'dark' 
+          ? 'bg-gray-900' 
+          : 'bg-gray-50 border border-gray-200'
+      } rounded-lg overflow-x-auto`}>
         <code className={`language-${language} text-xs leading-relaxed block p-2`}>
           {code}
         </code>
@@ -60,6 +67,27 @@ function CodeBlock({ code, language }: { code: string; language: string }) {
 export default function DocsClient({ docs }: { docs: Record<string, string> }) {
   const [activeSection, setActiveSection] = useState('readme')
   const [theme, setTheme] = useState<'light' | 'dark'>('dark')
+  
+  // Load appropriate Prism theme based on current theme
+  useEffect(() => {
+    // Remove any existing theme
+    const existingTheme = document.querySelector('link[data-prism-theme]')
+    if (existingTheme) {
+      existingTheme.remove()
+    }
+    
+    // Add new theme
+    const link = document.createElement('link')
+    link.rel = 'stylesheet'
+    link.setAttribute('data-prism-theme', 'true')
+    link.href = theme === 'dark' 
+      ? 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css'
+      : 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css'
+    document.head.appendChild(link)
+    
+    // Re-highlight after theme change
+    setTimeout(() => Prism.highlightAll(), 100)
+  }, [theme])
 
   const content = docs[sections.find(s => s.id === activeSection)?.file || 'README.md'] || ''
 
@@ -68,7 +96,7 @@ export default function DocsClient({ docs }: { docs: Record<string, string> }) {
     setTimeout(() => Prism.highlightAll(), 100)
   }, [content])
 
-  const renderMarkdown = (text: string) => {
+  const renderMarkdown = (text: string, theme: 'light' | 'dark') => {
     // Track if we're inside a list
     let inList = false
     
@@ -83,7 +111,8 @@ export default function DocsClient({ docs }: { docs: Record<string, string> }) {
       const isListItem = /^[\-\*]\s/.test(line) || /^\d+\.\s/.test(line)
       
       if (isListItem && !inList) {
-        processedLines.push('<ul class="list-disc list-inside mb-4 space-y-1">')
+        const listClass = theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+        processedLines.push(`<ul class="list-disc list-inside mb-4 space-y-1 ${listClass}">`)
         inList = true
       } else if (!isListItem && inList && line.trim() === '') {
         processedLines.push('</ul>')
@@ -104,12 +133,13 @@ export default function DocsClient({ docs }: { docs: Record<string, string> }) {
     
     let html = processedLines.join('\n')
     
-    // Headers
+    // Headers with theme-aware colors
+    const headerColor = theme === 'dark' ? 'text-gray-100' : 'text-gray-900'
     html = html
-      .replace(/^#### (.*$)/gim, '<h4 class="text-sm font-semibold mt-4 mb-2">$1</h4>')
-      .replace(/^### (.*$)/gim, '<h3 class="text-base font-semibold mt-6 mb-3">$1</h3>')
-      .replace(/^## (.*$)/gim, '<h2 class="text-xl font-bold mt-8 mb-4">$1</h2>')
-      .replace(/^# (.*$)/gim, '<h1 class="text-2xl font-bold mb-6">$1</h1>')
+      .replace(/^#### (.*$)/gim, `<h4 class="text-sm font-semibold mt-4 mb-2 ${headerColor}">$1</h4>`)
+      .replace(/^### (.*$)/gim, `<h3 class="text-base font-semibold mt-6 mb-3 ${headerColor}">$1</h3>`)
+      .replace(/^## (.*$)/gim, `<h2 class="text-xl font-bold mt-8 mb-4 ${headerColor}">$1</h2>`)
+      .replace(/^# (.*$)/gim, `<h1 class="text-2xl font-bold mb-6 ${headerColor}">$1</h1>`)
     
     // Extract and render code blocks separately
     const codeBlocks: { placeholder: string; component: JSX.Element }[] = []
@@ -120,14 +150,17 @@ export default function DocsClient({ docs }: { docs: Record<string, string> }) {
       const language = lang || 'javascript'
       codeBlocks.push({
         placeholder,
-        component: <CodeBlock key={blockIndex} code={code.trim()} language={language} />
+        component: <CodeBlock key={blockIndex} code={code.trim()} language={language} theme={theme} />
       })
       blockIndex++
       return placeholder
     })
     
-    // Inline code
-    html = html.replace(/`([^`]+)`/g, '<code class="bg-gray-800 text-blue-400 px-1 py-0.5 rounded text-xs font-mono">$1</code>')
+    // Inline code with theme support
+    const inlineCodeClass = theme === 'dark' 
+      ? 'bg-gray-800 text-blue-400' 
+      : 'bg-blue-50 text-blue-700 border border-blue-200'
+    html = html.replace(/`([^`]+)`/g, `<code class="${inlineCodeClass} px-1 py-0.5 rounded text-xs font-mono">$1</code>`)
     
     // Bold and italic
     html = html
@@ -135,14 +168,18 @@ export default function DocsClient({ docs }: { docs: Record<string, string> }) {
       .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold">$1</strong>')
       .replace(/\*(.*?)\*/g, '<em class="italic">$1</em>')
     
-    // Links
-    html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-blue-400 hover:text-blue-300 underline">$1</a>')
+    // Links with theme support
+    const linkClass = theme === 'dark' 
+      ? 'text-blue-400 hover:text-blue-300' 
+      : 'text-blue-600 hover:text-blue-800'
+    html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, `<a href="$2" class="${linkClass} underline">$1</a>`)
     
     // Tables - more robust handling
     const tableRegex = /(\|[^\n]+\|\n)+/g
     html = html.replace(tableRegex, (tableMatch) => {
       const rows = tableMatch.trim().split('\n')
-      let tableHtml = '<table class="w-full mb-6 text-xs border border-gray-800 rounded-lg overflow-hidden">'
+      const tableBorderClass = theme === 'dark' ? 'border-gray-800' : 'border-gray-300'
+      let tableHtml = `<table class="w-full mb-6 text-xs border ${tableBorderClass} rounded-lg overflow-hidden">`
       let isFirstRow = true
       
       rows.forEach((row, index) => {
@@ -187,16 +224,24 @@ export default function DocsClient({ docs }: { docs: Record<string, string> }) {
         
         const tag = isFirstRow ? 'th' : 'td'
         const cellClass = isFirstRow 
-          ? 'p-2 text-left font-semibold bg-gray-900 border-b border-gray-700 text-gray-300' 
-          : 'p-2 border-b border-gray-800 text-gray-400'
+          ? theme === 'dark'
+            ? 'p-2 text-left font-semibold bg-gray-900 border-b border-gray-700 text-gray-300' 
+            : 'p-2 text-left font-semibold bg-gray-100 border-b border-gray-300 text-gray-700'
+          : theme === 'dark'
+            ? 'p-2 border-b border-gray-800 text-gray-400'
+            : 'p-2 border-b border-gray-200 text-gray-600'
         
-        tableHtml += '<tr class="hover:bg-gray-900/50">'
+        const rowHoverClass = theme === 'dark' ? 'hover:bg-gray-900/50' : 'hover:bg-gray-50'
+        tableHtml += `<tr class="${rowHoverClass}">`
         filteredCells.forEach(cell => {
           // Clean up the cell content
           let content = cell.trim()
           
-          // Handle code blocks in cells
-          content = content.replace(/`([^`]+)`/g, '<code class="text-blue-400 bg-gray-800 px-1 rounded text-xs">$1</code>')
+          // Handle code blocks in cells with theme support
+          const cellCodeClass = theme === 'dark' 
+            ? 'text-blue-400 bg-gray-800' 
+            : 'text-blue-600 bg-blue-50'
+          content = content.replace(/`([^`]+)`/g, `<code class="${cellCodeClass} px-1 rounded text-xs">$1</code>`)
           
           // Handle bold
           content = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
@@ -213,7 +258,10 @@ export default function DocsClient({ docs }: { docs: Record<string, string> }) {
             // This looks like a TypeScript type union
             const parts = content.split(/\s+/)
             if (parts.length === 1) {
-              content = `<code class="text-blue-400 bg-gray-800 px-1 rounded text-xs font-mono">${content}</code>`
+              const typeCodeClass = theme === 'dark' 
+                ? 'text-blue-400 bg-gray-800' 
+                : 'text-blue-600 bg-blue-50'
+              content = `<code class="${typeCodeClass} px-1 rounded text-xs font-mono">${content}</code>`
             }
           }
           
@@ -236,7 +284,8 @@ export default function DocsClient({ docs }: { docs: Record<string, string> }) {
           return paragraph
         }
         if (paragraph.trim()) {
-          return `<p class="mb-4">${paragraph}</p>`
+          const textColor = theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+          return `<p class="mb-4 ${textColor}">${paragraph}</p>`
         }
         return ''
       })
@@ -260,7 +309,7 @@ export default function DocsClient({ docs }: { docs: Record<string, string> }) {
     return html
   }
 
-  const renderedContent = renderMarkdown(content)
+  const renderedContent = renderMarkdown(content, theme)
   const isArray = Array.isArray(renderedContent)
 
   return (
