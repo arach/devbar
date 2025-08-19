@@ -60,6 +60,7 @@ export interface DevToolbarProps {
   className?: string;
   theme?: 'dark' | 'light' | 'auto';
   hideInProduction?: boolean;
+  environment?: 'development' | 'staging' | 'production' | string;  // Explicit environment
   customIcon?: ReactNode;
   title?: string;
   width?: string;
@@ -75,6 +76,7 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
   className = '',
   theme = 'auto',
   hideInProduction = true,
+  environment,  // Let consumer explicitly set environment
   customIcon,
   title = 'Dev',
   width = '320px',  // Slightly wider for better content fit
@@ -113,19 +115,22 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
     return () => mediaQuery.removeEventListener('change', handler);
   }, [theme]);
   
-  // Calculate visibility based on environment - no effect needed!
+  // Clean visibility logic - respects explicit environment prop
   const isVisible = useMemo(() => {
     if (typeof window === 'undefined') return false; // SSR safety
     
-    // Use a safer way to check NODE_ENV that works in all environments
-    const nodeEnv = typeof process !== 'undefined' && process.env?.NODE_ENV;
-    const isDevelopment = nodeEnv === 'development' || 
-      (!nodeEnv && 
-        (window.location.hostname === 'localhost' || 
-         window.location.hostname === '127.0.0.1'));
+    // If hideInProduction is false, always show
+    if (!hideInProduction) return true;
     
-    return !hideInProduction || isDevelopment;
-  }, [hideInProduction]);
+    // Use explicit environment prop if provided
+    if (environment) {
+      return environment !== 'production';
+    }
+    
+    // Fall back to NODE_ENV only if no environment prop provided
+    const nodeEnv = typeof process !== 'undefined' && process.env?.NODE_ENV;
+    return nodeEnv !== 'production';
+  }, [hideInProduction, environment]);
   
   // Handle resize for pane mode
   useEffect(() => {
