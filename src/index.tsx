@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ReactNode, ComponentType } from 'react';
+import React, { useState, useEffect, useMemo, ReactNode, ComponentType } from 'react';
 import { Bug, X, Maximize2, Minimize2 } from 'lucide-react';
 
 // Typography system with Inconsolata
@@ -85,7 +85,6 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
   const [isCollapsed, setIsCollapsed] = useState(!defaultOpen);
   const [isExpanded, setIsExpanded] = useState(false);
   const [activeTab, setActiveTab] = useState(defaultTab || tabs[0]?.id || '');
-  const [isVisible, setIsVisible] = useState(false);
   const [paneHeight, setPaneHeight] = useState(defaultPaneHeight);
   const [isResizing, setIsResizing] = useState(false);
   
@@ -94,32 +93,36 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
   
   // Handle theme detection for 'auto' mode
   useEffect(() => {
-    if (theme === 'auto' && typeof window !== 'undefined') {
-      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-      setActualTheme(mediaQuery.matches ? 'dark' : 'light');
-      
-      const handler = (e: MediaQueryListEvent) => {
-        setActualTheme(e.matches ? 'dark' : 'light');
-      };
-      
-      mediaQuery.addEventListener('change', handler);
-      return () => mediaQuery.removeEventListener('change', handler);
-    } else if (theme !== 'auto') {
+    if (theme !== 'auto') {
       setActualTheme(theme);
+      return;
     }
+    
+    if (typeof window === 'undefined') {
+      return;
+    }
+    
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    setActualTheme(mediaQuery.matches ? 'dark' : 'light');
+    
+    const handler = (e: MediaQueryListEvent) => {
+      setActualTheme(e.matches ? 'dark' : 'light');
+    };
+    
+    mediaQuery.addEventListener('change', handler);
+    return () => mediaQuery.removeEventListener('change', handler);
   }, [theme]);
   
-  // Only check environment on client side to avoid hydration mismatch
-  useEffect(() => {
-    // Check for development mode using NODE_ENV as documented
-    // Fallback to hostname check for cases where NODE_ENV isn't available
+  // Calculate visibility based on environment - no effect needed!
+  const isVisible = useMemo(() => {
+    if (typeof window === 'undefined') return false; // SSR safety
+    
     const isDevelopment = process.env.NODE_ENV === 'development' || 
-      (process.env.NODE_ENV === undefined && typeof window !== 'undefined' && 
+      (process.env.NODE_ENV === undefined && 
         (window.location.hostname === 'localhost' || 
          window.location.hostname === '127.0.0.1'));
     
-    const shouldShow = !hideInProduction || isDevelopment;
-    setIsVisible(shouldShow);
+    return !hideInProduction || isDevelopment;
   }, [hideInProduction]);
   
   // Handle resize for pane mode
