@@ -564,7 +564,7 @@ When switching between package managers:
 If you're still experiencing issues:
 
 1. Check the [GitHub Issues](https://github.com/arach/devbar/issues)
-2. Review the **Examples** section for working implementations
+2. Review the [Examples](#examples) section for working implementations
 3. Ensure you're using the latest version
 4. Create a minimal reproduction and open an issue
 

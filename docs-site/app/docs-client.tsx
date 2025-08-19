@@ -18,11 +18,10 @@ if (typeof window !== 'undefined') {
 const DEMO_URL = process.env.NEXT_PUBLIC_DEMO_URL || 'http://localhost:3000'
 
 const sections = [
-  { id: 'overview', title: 'Overview', icon: Book, file: 'README.md' },  // README.md has the comprehensive docs
+  { id: 'overview', title: 'Overview', icon: Book, file: 'README.md' },
   { id: 'getting-started', title: 'Getting Started', icon: Rocket, file: 'getting-started.md' },
   { id: 'api-reference', title: 'API Reference', icon: Code, file: 'api-reference.md' },
   { id: 'configuration', title: 'Configuration', icon: Settings, file: 'configuration.md' },
-  { id: 'environment-control', title: 'Environment Control', icon: Settings, file: 'environment-control.md' },
   { id: 'examples', title: 'Examples', icon: Lightbulb, file: 'examples.md' },
   { id: 'advanced', title: 'Advanced', icon: Layers, file: 'advanced.md' },
   { id: 'troubleshooting', title: 'Troubleshooting', icon: Layers, file: 'troubleshooting.md' },
@@ -91,6 +90,23 @@ export default function DocsClient({ docsJson }: { docsJson: string }) {
   // Mark as mounted
   useEffect(() => {
     setMounted(true)
+  }, [])
+  
+  // Handle internal navigation links
+  useEffect(() => {
+    const handleInternalLink = (e: MouseEvent) => {
+      const target = e.target as HTMLElement
+      if (target.classList.contains('internal-link')) {
+        e.preventDefault()
+        const sectionId = target.getAttribute('data-section')
+        if (sectionId) {
+          setActiveSection(sectionId)
+        }
+      }
+    }
+    
+    document.addEventListener('click', handleInternalLink)
+    return () => document.removeEventListener('click', handleInternalLink)
   }, [])
   
   // Load appropriate Prism theme based on current theme  
@@ -225,11 +241,19 @@ export default function DocsClient({ docsJson }: { docsJson: string }) {
       .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold">$1</strong>')
       .replace(/\*(.*?)\*/g, '<em class="italic">$1</em>')
     
-    // Links with theme support
+    // Links with theme support - handle internal navigation
     const linkClass = theme === 'dark' 
       ? 'text-blue-400 hover:text-blue-300' 
       : 'text-blue-600 hover:text-blue-800'
-    html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, `<a href="$2" class="${linkClass} underline">$1</a>`)
+    html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (match, text, href) => {
+      // Check if it's an internal section link
+      if (href.startsWith('#')) {
+        const sectionId = href.substring(1)
+        return `<a href="${href}" data-section="${sectionId}" class="${linkClass} underline internal-link">${text}</a>`
+      }
+      // External links open normally
+      return `<a href="${href}" class="${linkClass} underline" target="_blank" rel="noopener noreferrer">${text}</a>`
+    })
     
     // Tables - more robust handling
     const tableRegex = /(\|[^\n]+\|\n)+/g

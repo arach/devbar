@@ -198,6 +198,8 @@ By default, the toolbar only appears in development:
 <DevToolbar tabs={tabs} hideInProduction={false} />
 ```
 
+For more control over environment-based visibility, see [Environment Control](./environment-control.md).
+
 ### Environment Detection
 
 The toolbar checks `process.env.NODE_ENV`:
