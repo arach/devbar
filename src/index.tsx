@@ -117,8 +117,10 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
   const isVisible = useMemo(() => {
     if (typeof window === 'undefined') return false; // SSR safety
     
-    const isDevelopment = process.env.NODE_ENV === 'development' || 
-      (process.env.NODE_ENV === undefined && 
+    // Use a safer way to check NODE_ENV that works in all environments
+    const nodeEnv = typeof process !== 'undefined' && process.env?.NODE_ENV;
+    const isDevelopment = nodeEnv === 'development' || 
+      (!nodeEnv && 
         (window.location.hostname === 'localhost' || 
          window.location.hostname === '127.0.0.1'));
     
