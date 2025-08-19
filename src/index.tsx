@@ -128,8 +128,19 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
     }
     
     // Fall back to NODE_ENV only if no environment prop provided
-    const nodeEnv = typeof process !== 'undefined' && process.env?.NODE_ENV;
-    return nodeEnv !== 'production';
+    // Safely check for process.env without TypeScript errors
+    try {
+      // @ts-ignore - process may not exist in some environments
+      const nodeEnv = typeof process !== 'undefined' ? process.env?.NODE_ENV : undefined;
+      if (nodeEnv) {
+        return nodeEnv !== 'production';
+      }
+    } catch {
+      // process is not defined, continue
+    }
+    
+    // Default to showing if we can't determine environment
+    return true;
   }, [hideInProduction, environment]);
   
   // Handle resize for pane mode
