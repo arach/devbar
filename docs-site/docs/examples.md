@@ -671,6 +671,432 @@ function EnvironmentToolbar() {
 }
 ```
 
+## E-commerce Debugging Toolbar
+
+Complete debugging solution for e-commerce applications:
+
+```tsx
+import { DevToolbar, DevToolbarSection, DevToolbarInfo, DevToolbarButton, DevToolbarToggle } from '@arach/devbar';
+import { ShoppingCart, CreditCard, Package, TrendingUp } from 'lucide-react';
+import { useState, useEffect } from 'react';
+
+function EcommerceDebugger() {
+  const [cart, setCart] = useState({ items: [], total: 0, tax: 0, shipping: 0 });
+  const [testMode, setTestMode] = useState(false);
+  const [analytics, setAnalytics] = useState({ views: 0, conversions: 0, revenue: 0 });
+  
+  const tabs = [
+    {
+      id: 'cart',
+      label: 'Cart',
+      icon: ShoppingCart,
+      content: (
+        <>
+          <DevToolbarSection title="Cart State">
+            <DevToolbarInfo label="Items" value={cart.items.length} />
+            <DevToolbarInfo label="Subtotal" value={`$${cart.total.toFixed(2)}`} />
+            <DevToolbarInfo label="Tax" value={`$${cart.tax.toFixed(2)}`} />
+            <DevToolbarInfo label="Shipping" value={`$${cart.shipping.toFixed(2)}`} />
+            <DevToolbarInfo label="Total" value={`$${(cart.total + cart.tax + cart.shipping).toFixed(2)}`} />
+          </DevToolbarSection>
+          
+          <DevToolbarSection title="Test Scenarios">
+            <DevToolbarButton
+              onClick={() => {
+                // Add test item to cart
+                const testItem = {
+                  id: Date.now(),
+                  name: 'Test Product',
+                  price: 99.99,
+                  quantity: 1
+                };
+                setCart(prev => ({
+                  ...prev,
+                  items: [...prev.items, testItem],
+                  total: prev.total + testItem.price
+                }));
+              }}
+              variant="primary"
+              size="xs"
+            >
+              Add Test Item
+            </DevToolbarButton>
+            
+            <DevToolbarButton
+              onClick={() => {
+                // Simulate abandoned cart
+                console.log('Simulating abandoned cart...');
+                window.dispatchEvent(new CustomEvent('cart:abandoned', { 
+                  detail: cart 
+                }));
+              }}
+              variant="warning"
+              size="xs"
+            >
+              Simulate Abandon
+            </DevToolbarButton>
+            
+            <DevToolbarButton
+              onClick={() => setCart({ items: [], total: 0, tax: 0, shipping: 0 })}
+              variant="danger"
+              size="xs"
+            >
+              Clear Cart
+            </DevToolbarButton>
+          </DevToolbarSection>
+          
+          <DevToolbarSection title="Cart Items">
+            <div style={{ 
+              maxHeight: '150px', 
+              overflow: 'auto',
+              fontSize: '0.65rem'
+            }}>
+              {cart.items.length === 0 ? (
+                <div style={{ color: '#6b7280' }}>Cart is empty</div>
+              ) : (
+                cart.items.map((item, i) => (
+                  <div key={i} style={{ 
+                    padding: '4px',
+                    borderBottom: '1px solid #374151',
+                    display: 'flex',
+                    justifyContent: 'space-between'
+                  }}>
+                    <span>{item.name} x{item.quantity}</span>
+                    <span>${item.price.toFixed(2)}</span>
+                  </div>
+                ))
+              )}
+            </div>
+          </DevToolbarSection>
+        </>
+      )
+    },
+    {
+      id: 'checkout',
+      label: 'Checkout',
+      icon: CreditCard,
+      content: (
+        <>
+          <DevToolbarSection title="Payment Testing">
+            <DevToolbarToggle
+              label="Test Mode"
+              checked={testMode}
+              onChange={setTestMode}
+            />
+            <DevToolbarInfo 
+              label="Stripe Key" 
+              value={testMode ? 'pk_test_***' : 'pk_live_***'} 
+            />
+          </DevToolbarSection>
+          
+          <DevToolbarSection title="Test Cards">
+            <div style={{ fontSize: '0.65rem' }}>
+              <div style={{ marginBottom: '8px' }}>
+                <div style={{ fontWeight: 600 }}>Success</div>
+                <code>4242 4242 4242 4242</code>
+              </div>
+              <div style={{ marginBottom: '8px' }}>
+                <div style={{ fontWeight: 600 }}>Decline</div>
+                <code>4000 0000 0000 0002</code>
+              </div>
+              <div style={{ marginBottom: '8px' }}>
+                <div style={{ fontWeight: 600 }}>3D Secure</div>
+                <code>4000 0025 0000 3155</code>
+              </div>
+            </div>
+          </DevToolbarSection>
+          
+          <DevToolbarSection title="Checkout Actions">
+            <DevToolbarButton
+              onClick={() => {
+                // Fill test checkout data
+                const fillTestData = () => {
+                  document.querySelectorAll('input').forEach(input => {
+                    if (input.name === 'email') input.value = 'test@example.com';
+                    if (input.name === 'name') input.value = 'Test User';
+                    if (input.name === 'address') input.value = '123 Test St';
+                    if (input.name === 'city') input.value = 'Test City';
+                    if (input.name === 'zip') input.value = '12345';
+                  });
+                };
+                fillTestData();
+              }}
+              variant="success"
+              size="xs"
+            >
+              Fill Test Data
+            </DevToolbarButton>
+            
+            <DevToolbarButton
+              onClick={() => {
+                // Simulate payment error
+                window.dispatchEvent(new CustomEvent('payment:error', {
+                  detail: { code: 'card_declined', message: 'Your card was declined.' }
+                }));
+              }}
+              variant="danger"
+              size="xs"
+            >
+              Simulate Error
+            </DevToolbarButton>
+          </DevToolbarSection>
+        </>
+      )
+    },
+    {
+      id: 'analytics',
+      label: 'Analytics',
+      icon: TrendingUp,
+      content: (
+        <>
+          <DevToolbarSection title="Session Metrics">
+            <DevToolbarInfo label="Page Views" value={analytics.views} />
+            <DevToolbarInfo label="Conversions" value={analytics.conversions} />
+            <DevToolbarInfo label="Revenue" value={`$${analytics.revenue.toFixed(2)}`} />
+            <DevToolbarInfo 
+              label="Conversion Rate" 
+              value={`${((analytics.conversions / analytics.views) * 100 || 0).toFixed(1)}%`} 
+            />
+          </DevToolbarSection>
+          
+          <DevToolbarSection title="Events">
+            <DevToolbarButton
+              onClick={() => {
+                console.log('Track: Product Viewed');
+                setAnalytics(prev => ({ ...prev, views: prev.views + 1 }));
+              }}
+              size="xs"
+            >
+              Track View
+            </DevToolbarButton>
+            
+            <DevToolbarButton
+              onClick={() => {
+                console.log('Track: Purchase Complete');
+                setAnalytics(prev => ({ 
+                  ...prev, 
+                  conversions: prev.conversions + 1,
+                  revenue: prev.revenue + (cart.total + cart.tax + cart.shipping)
+                }));
+              }}
+              variant="success"
+              size="xs"
+            >
+              Track Purchase
+            </DevToolbarButton>
+          </DevToolbarSection>
+        </>
+      )
+    }
+  ];
+  
+  return <DevToolbar tabs={tabs} position="bottom-right" title="E-commerce" />;
+}
+```
+
+## Form Validation Debugging
+
+Debug and test form validation in real-time:
+
+```tsx
+import { DevToolbar, DevToolbarSection, DevToolbarInfo, DevToolbarButton } from '@arach/devbar';
+import { FileCheck, AlertTriangle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+
+function FormValidationDebugger() {
+  const [formState, setFormState] = useState({
+    fields: {},
+    errors: {},
+    touched: {},
+    isValid: false,
+    isSubmitting: false
+  });
+  
+  const [validationRules, setValidationRules] = useState({
+    email: { required: true, pattern: 'email' },
+    password: { required: true, minLength: 8 },
+    name: { required: true, minLength: 2 }
+  });
+  
+  useEffect(() => {
+    // Hook into form validation library (e.g., Formik, React Hook Form)
+    const interceptFormState = () => {
+      const forms = document.querySelectorAll('form');
+      forms.forEach(form => {
+        form.addEventListener('input', (e) => {
+          const input = e.target as HTMLInputElement;
+          setFormState(prev => ({
+            ...prev,
+            fields: { ...prev.fields, [input.name]: input.value }
+          }));
+        });
+        
+        form.addEventListener('blur', (e) => {
+          const input = e.target as HTMLInputElement;
+          setFormState(prev => ({
+            ...prev,
+            touched: { ...prev.touched, [input.name]: true }
+          }));
+        }, true);
+      });
+    };
+    
+    interceptFormState();
+  }, []);
+  
+  const tabs = [
+    {
+      id: 'validation',
+      label: 'Validation',
+      icon: FileCheck,
+      content: (
+        <>
+          <DevToolbarSection title="Form State">
+            <DevToolbarInfo label="Valid" value={formState.isValid} />
+            <DevToolbarInfo label="Submitting" value={formState.isSubmitting} />
+            <DevToolbarInfo label="Fields" value={Object.keys(formState.fields).length} />
+            <DevToolbarInfo label="Errors" value={Object.keys(formState.errors).length} />
+          </DevToolbarSection>
+          
+          <DevToolbarSection title="Field Status">
+            <div style={{ fontSize: '0.65rem' }}>
+              {Object.entries(formState.fields).map(([field, value]) => (
+                <div key={field} style={{ 
+                  marginBottom: '8px',
+                  padding: '6px',
+                  borderRadius: '4px',
+                  backgroundColor: formState.errors[field] ? '#7f1d1d' : '#14532d'
+                }}>
+                  <div style={{ fontWeight: 600 }}>{field}</div>
+                  <div style={{ opacity: 0.8 }}>Value: {value || '(empty)'}</div>
+                  {formState.touched[field] && (
+                    <div style={{ fontSize: '0.6rem', marginTop: '2px' }}>
+                      ✓ Touched
+                    </div>
+                  )}
+                  {formState.errors[field] && (
+                    <div style={{ color: '#ef4444', marginTop: '4px' }}>
+                      {formState.errors[field]}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </DevToolbarSection>
+          
+          <DevToolbarSection title="Test Actions">
+            <DevToolbarButton
+              onClick={() => {
+                // Fill valid data
+                document.querySelectorAll('input').forEach(input => {
+                  const el = input as HTMLInputElement;
+                  if (el.type === 'email') el.value = 'valid@example.com';
+                  if (el.type === 'password') el.value = 'ValidPass123!';
+                  if (el.name === 'name') el.value = 'John Doe';
+                  el.dispatchEvent(new Event('input', { bubbles: true }));
+                });
+              }}
+              variant="success"
+              size="xs"
+            >
+              Fill Valid Data
+            </DevToolbarButton>
+            
+            <DevToolbarButton
+              onClick={() => {
+                // Fill invalid data
+                document.querySelectorAll('input').forEach(input => {
+                  const el = input as HTMLInputElement;
+                  if (el.type === 'email') el.value = 'invalid-email';
+                  if (el.type === 'password') el.value = '123';
+                  if (el.name === 'name') el.value = 'J';
+                  el.dispatchEvent(new Event('input', { bubbles: true }));
+                });
+              }}
+              variant="danger"
+              size="xs"
+            >
+              Fill Invalid Data
+            </DevToolbarButton>
+            
+            <DevToolbarButton
+              onClick={() => {
+                // Touch all fields
+                document.querySelectorAll('input').forEach(input => {
+                  input.dispatchEvent(new Event('blur', { bubbles: true }));
+                });
+              }}
+              variant="warning"
+              size="xs"
+            >
+              Touch All Fields
+            </DevToolbarButton>
+            
+            <DevToolbarButton
+              onClick={() => {
+                // Submit form
+                const form = document.querySelector('form');
+                if (form) {
+                  form.dispatchEvent(new Event('submit', { bubbles: true }));
+                }
+              }}
+              variant="primary"
+              size="xs"
+            >
+              Trigger Submit
+            </DevToolbarButton>
+          </DevToolbarSection>
+        </>
+      )
+    },
+    {
+      id: 'errors',
+      label: 'Errors',
+      icon: AlertTriangle,
+      content: (
+        <>
+          <DevToolbarSection title="Validation Errors">
+            {Object.keys(formState.errors).length === 0 ? (
+              <div style={{ color: '#10b981', fontSize: '0.7rem' }}>
+                ✓ No validation errors
+              </div>
+            ) : (
+              <div style={{ fontSize: '0.65rem' }}>
+                {Object.entries(formState.errors).map(([field, error]) => (
+                  <div key={field} style={{ 
+                    marginBottom: '8px',
+                    padding: '6px',
+                    borderRadius: '4px',
+                    backgroundColor: '#7f1d1d'
+                  }}>
+                    <div style={{ fontWeight: 600, color: '#ef4444' }}>
+                      {field}
+                    </div>
+                    <div style={{ color: '#fca5a5' }}>{error}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </DevToolbarSection>
+          
+          <DevToolbarSection title="Validation Rules">
+            <div style={{ fontSize: '0.6rem', opacity: 0.8 }}>
+              {Object.entries(validationRules).map(([field, rules]) => (
+                <div key={field} style={{ marginBottom: '4px' }}>
+                  <strong>{field}:</strong> {JSON.stringify(rules)}
+                </div>
+              ))}
+            </div>
+          </DevToolbarSection>
+        </>
+      )
+    }
+  ];
+  
+  return <DevToolbar tabs={tabs} position="bottom-left" title="Forms" />;
+}
+```
+
 ## Usage Tips
 
 1. **Combine Multiple Examples**: Mix and match features from different examples

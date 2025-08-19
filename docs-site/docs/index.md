@@ -12,7 +12,8 @@ A beautiful, minimal development toolbar for React applications with Chrome DevT
 - [API Reference](./api-reference.md) - Complete component and hook documentation
 - [Configuration](./configuration.md) - Positioning, themes, and customization options
 - [Examples](./examples.md) - Common use cases and recipes
-- [Advanced Features](./advanced-features.md) - Pane mode, keyboard shortcuts, and more
+- [Advanced Features](./advanced.md) - Pane mode, keyboard shortcuts, and more
+- [Troubleshooting](./troubleshooting.md) - Common issues and solutions
 
 ## Features
 
@@ -66,13 +67,6 @@ function App() {
   )
 }
 ```
-
-## Browser Support
-
-- Chrome/Edge 90+
-- Firefox 88+
-- Safari 14+
-- All modern browsers with ES6 support
 
 ## License
 

@@ -58,6 +58,7 @@ That's it! The toolbar will appear as a bug icon in the bottom-right corner of y
 - [Configuration](./configuration.md) - Positioning and themes
 - [Examples](./examples.md) - Common patterns
 - [Advanced](./advanced.md) - Pane mode, keyboard shortcuts
+- [Troubleshooting](./troubleshooting.md) - Common issues and solutions
 
 ## Key Features
 
@@ -183,13 +184,6 @@ import {
 - **TypeScript**: Full type safety and IntelliSense
 - **Flexible**: 5 positioning modes including Chrome DevTools-style pane
 - **Production-safe**: Auto-hides in production builds
-
-## Browser Support
-
-- Chrome/Edge 90+
-- Firefox 90+
-- Safari 14+
-- React 16.8+ (requires hooks)
 
 ## License
 

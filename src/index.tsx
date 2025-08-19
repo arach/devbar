@@ -89,15 +89,34 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
   const [paneHeight, setPaneHeight] = useState(defaultPaneHeight);
   const [isResizing, setIsResizing] = useState(false);
   
+  // Determine actual theme based on 'auto' setting
+  const [actualTheme, setActualTheme] = useState<'light' | 'dark'>('dark');
+  
+  // Handle theme detection for 'auto' mode
+  useEffect(() => {
+    if (theme === 'auto' && typeof window !== 'undefined') {
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      setActualTheme(mediaQuery.matches ? 'dark' : 'light');
+      
+      const handler = (e: MediaQueryListEvent) => {
+        setActualTheme(e.matches ? 'dark' : 'light');
+      };
+      
+      mediaQuery.addEventListener('change', handler);
+      return () => mediaQuery.removeEventListener('change', handler);
+    } else if (theme !== 'auto') {
+      setActualTheme(theme);
+    }
+  }, [theme]);
+  
   // Only check environment on client side to avoid hydration mismatch
   useEffect(() => {
-    // Always show in development, hide in production if specified
-    // Check for development mode using a safer approach
-    const isDevelopment = typeof window !== 'undefined' && 
-      (window.location.hostname === 'localhost' || 
-       window.location.hostname === '127.0.0.1' ||
-       window.location.hostname.startsWith('192.168.') ||
-       window.location.hostname.includes('.local'));
+    // Check for development mode using NODE_ENV as documented
+    // Fallback to hostname check for cases where NODE_ENV isn't available
+    const isDevelopment = process.env.NODE_ENV === 'development' || 
+      (process.env.NODE_ENV === undefined && typeof window !== 'undefined' && 
+        (window.location.hostname === 'localhost' || 
+         window.location.hostname === '127.0.0.1'));
     
     const shouldShow = !hideInProduction || isDevelopment;
     setIsVisible(shouldShow);
@@ -191,7 +210,7 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
       right: '24px',
       transform: isExpanded ? 'none' : 'none',
       transformOrigin: 'bottom right',
-      backgroundColor: theme === 'light' ? '#ffffff' : '#111827', // Solid backgrounds
+      backgroundColor: actualTheme === 'light' ? '#ffffff' : '#111827', // Solid backgrounds
       borderRadius: '16px',
     },
     'bottom-left': { 
@@ -200,7 +219,7 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
       left: '24px',
       transform: isExpanded ? 'none' : 'none',
       transformOrigin: 'bottom left',
-      backgroundColor: theme === 'light' ? '#ffffff' : '#111827',
+      backgroundColor: actualTheme === 'light' ? '#ffffff' : '#111827',
       borderRadius: '16px',
     },
     'top-right': { 
@@ -209,7 +228,7 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
       right: '24px',
       transform: isExpanded ? 'none' : 'none',
       transformOrigin: 'top right',
-      backgroundColor: theme === 'light' ? '#ffffff' : '#111827',
+      backgroundColor: actualTheme === 'light' ? '#ffffff' : '#111827',
       borderRadius: '16px',
     },
     'top-left': { 
@@ -218,7 +237,7 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
       left: '24px',
       transform: isExpanded ? 'none' : 'none',
       transformOrigin: 'top left',
-      backgroundColor: theme === 'light' ? '#ffffff' : '#111827',
+      backgroundColor: actualTheme === 'light' ? '#ffffff' : '#111827',
       borderRadius: '16px',
     },
     'pane': { 
@@ -226,15 +245,15 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
       bottom: isCollapsed ? '-100%' : '0',
       left: '0',
       right: '0',
-      backgroundColor: theme === 'light' ? '#ffffff' : '#111827',
+      backgroundColor: actualTheme === 'light' ? '#ffffff' : '#111827',
       borderRadius: '0',
-      borderTop: `0.5px solid ${theme === 'light' ? '#e5e7eb' : '#374151'}`,
+      borderTop: `0.5px solid ${actualTheme === 'light' ? '#e5e7eb' : '#374151'}`,
       boxShadow: '0 -4px 12px rgba(0, 0, 0, 0.15)',
     },
   };
   
   // Theme classes (fully opaque backgrounds)
-  const themeClasses = theme === 'light' 
+  const themeClasses = actualTheme === 'light' 
     ? 'bg-white text-gray-900'
     : 'bg-gray-900 dark:bg-black text-white';
   
@@ -254,25 +273,25 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
           alignItems: 'center',
           justifyContent: 'center',
           padding: '8px',
-          backgroundColor: theme === 'light' ? '#ffffff' : '#0a0a0a',
-          backgroundImage: theme === 'dark' ? 'linear-gradient(135deg, #0a0a0a, #1a1a1a)' : 'none',
+          backgroundColor: actualTheme === 'light' ? '#ffffff' : '#0a0a0a',
+          backgroundImage: actualTheme === 'dark' ? 'linear-gradient(135deg, #0a0a0a, #1a1a1a)' : 'none',
           border: 'none',
           outline: 'none',
           cursor: 'pointer',
           transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-          boxShadow: theme === 'light' 
+          boxShadow: actualTheme === 'light' 
             ? '0 0 0 1px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04), 0 4px 8px rgba(0, 0, 0, 0.04)'
             : '0 0 0 1px rgba(255, 255, 255, 0.1), 0 2px 4px rgba(0, 0, 0, 0.3), 0 4px 8px rgba(0, 0, 0, 0.3)',
         }}
         onMouseEnter={(e) => {
           e.currentTarget.style.transform = 'scale(1.08)';
-          e.currentTarget.style.boxShadow = theme === 'light'
+          e.currentTarget.style.boxShadow = actualTheme === 'light'
             ? '0 0 0 1px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.08), 0 8px 16px rgba(0, 0, 0, 0.08)'
             : '0 0 0 1px rgba(255, 255, 255, 0.15), 0 4px 8px rgba(0, 0, 0, 0.4), 0 8px 16px rgba(0, 0, 0, 0.4)';
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.transform = 'scale(1)';
-          e.currentTarget.style.boxShadow = theme === 'light'
+          e.currentTarget.style.boxShadow = actualTheme === 'light'
             ? '0 0 0 1px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04), 0 4px 8px rgba(0, 0, 0, 0.04)'
             : '0 0 0 1px rgba(255, 255, 255, 0.1), 0 2px 4px rgba(0, 0, 0, 0.3), 0 4px 8px rgba(0, 0, 0, 0.3)';
         }}
@@ -292,7 +311,7 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
               height: '16px',
               transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
               transform: isCollapsed ? 'rotate(0deg)' : 'rotate(180deg)',
-              color: theme === 'light' ? '#374151' : '#d1d5db',
+              color: actualTheme === 'light' ? '#374151' : '#d1d5db',
             }}
             suppressHydrationWarning
             aria-hidden="true"
@@ -319,7 +338,7 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
                overflow: 'hidden',
                zIndex: 9998,
                border: position !== 'pane' 
-                 ? `1px solid ${theme === 'light' ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.1)'}`
+                 ? `1px solid ${actualTheme === 'light' ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.1)'}`
                  : 'none',
              }}>
           {/* Resize handle for pane mode */}
@@ -333,7 +352,7 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
                 transition: 'background-color 0.2s',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = theme === 'light' 
+                e.currentTarget.style.backgroundColor = actualTheme === 'light' 
                   ? 'rgba(59, 130, 246, 0.1)' 
                   : 'rgba(59, 130, 246, 0.2)';
               }}
@@ -349,7 +368,7 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            borderBottom: `1px solid ${theme === 'light' ? '#e5e7eb' : 'rgba(55, 65, 81, 0.5)'}`,
+            borderBottom: `1px solid ${actualTheme === 'light' ? '#e5e7eb' : 'rgba(55, 65, 81, 0.5)'}`,
             paddingLeft: '10px',
             paddingRight: '6px',
             paddingTop: '4px',
@@ -359,7 +378,7 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
           }}>
             <h3 style={{ 
               ...typography.title,
-              color: theme === 'light' ? '#374151' : '#e5e7eb'
+              color: actualTheme === 'light' ? '#374151' : '#e5e7eb'
             }}>{title}</h3>
             <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
               {position !== 'pane' && (
@@ -377,16 +396,16 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
                     alignItems: 'center',
                     justifyContent: 'center',
                     transition: 'all 0.15s ease',
-                    color: theme === 'light' ? '#9ca3af' : '#6b7280',
+                    color: actualTheme === 'light' ? '#9ca3af' : '#6b7280',
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = theme === 'light' ? 'rgba(0, 0, 0, 0.08)' : 'rgba(255, 255, 255, 0.08)';
-                    e.currentTarget.style.color = theme === 'light' ? '#374151' : '#e5e7eb';
+                    e.currentTarget.style.backgroundColor = actualTheme === 'light' ? 'rgba(0, 0, 0, 0.08)' : 'rgba(255, 255, 255, 0.08)';
+                    e.currentTarget.style.color = actualTheme === 'light' ? '#374151' : '#e5e7eb';
                     e.currentTarget.style.transform = 'scale(1.1)';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.backgroundColor = 'transparent';
-                    e.currentTarget.style.color = theme === 'light' ? '#9ca3af' : '#6b7280';
+                    e.currentTarget.style.color = actualTheme === 'light' ? '#9ca3af' : '#6b7280';
                     e.currentTarget.style.transform = 'scale(1)';
                   }}
                   title={isExpanded ? "Collapse toolbar" : "Expand toolbar"}
@@ -413,11 +432,11 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
                 alignItems: 'center',
                 justifyContent: 'center',
                 transition: 'all 0.15s ease',
-                color: theme === 'light' ? '#9ca3af' : '#6b7280',
+                color: actualTheme === 'light' ? '#9ca3af' : '#6b7280',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = theme === 'light' ? 'rgba(0, 0, 0, 0.08)' : 'rgba(255, 255, 255, 0.08)';
-                e.currentTarget.style.color = theme === 'light' ? '#374151' : '#e5e7eb';
+                e.currentTarget.style.backgroundColor = actualTheme === 'light' ? 'rgba(0, 0, 0, 0.08)' : 'rgba(255, 255, 255, 0.08)';
+                e.currentTarget.style.color = actualTheme === 'light' ? '#374151' : '#e5e7eb';
                 e.currentTarget.style.transform = 'scale(1.1)';
               }}
               onMouseLeave={(e) => {
@@ -441,7 +460,7 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
           {tabs.length > 1 && (
             <div style={{ 
               display: 'flex',
-              borderBottom: `1px solid ${theme === 'light' ? '#e5e7eb' : 'rgba(55, 65, 81, 0.5)'}`,
+              borderBottom: `1px solid ${actualTheme === 'light' ? '#e5e7eb' : 'rgba(55, 65, 81, 0.5)'}`,
               height: '36px',
               flexShrink: 0,
             }}>
@@ -453,13 +472,13 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
                   onClick={() => setActiveTab(id)}
                   onMouseEnter={(e) => {
                     if (activeTab !== id) {
-                      e.currentTarget.style.background = theme === 'light' 
+                      e.currentTarget.style.background = actualTheme === 'light' 
                         ? 'rgba(243, 244, 246, 0.9)' 
                         : 'rgba(55, 65, 81, 0.8)';
                       e.currentTarget.style.backdropFilter = 'blur(12px)';
-                      e.currentTarget.style.color = theme === 'light' ? '#111827' : '#ffffff';
+                      e.currentTarget.style.color = actualTheme === 'light' ? '#111827' : '#ffffff';
                       e.currentTarget.style.transform = 'translateY(-1px)';
-                      e.currentTarget.style.boxShadow = theme === 'light'
+                      e.currentTarget.style.boxShadow = actualTheme === 'light'
                         ? 'inset 0 1px 3px rgba(0, 0, 0, 0.05)'
                         : 'inset 0 1px 3px rgba(255, 255, 255, 0.05)';
                       const icon = e.currentTarget.querySelector('svg');
@@ -472,7 +491,7 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
                     if (activeTab !== id) {
                       e.currentTarget.style.background = 'transparent';
                       e.currentTarget.style.backdropFilter = 'none';
-                      e.currentTarget.style.color = theme === 'light' ? '#6b7280' : '#9ca3af';
+                      e.currentTarget.style.color = actualTheme === 'light' ? '#6b7280' : '#9ca3af';
                       e.currentTarget.style.transform = 'translateY(0)';
                       e.currentTarget.style.boxShadow = 'none';
                       const icon = e.currentTarget.querySelector('svg');
@@ -490,15 +509,15 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
                     padding: '6px 10px',
                     ...typography.tab,
                     background: activeTab === id 
-                      ? (theme === 'light' ? '#f9fafb' : '#1f2937')
+                      ? (actualTheme === 'light' ? '#f9fafb' : '#1f2937')
                       : 'transparent',
                     color: activeTab === id
-                      ? (theme === 'light' ? '#111827' : '#ffffff')
-                      : (theme === 'light' ? '#6b7280' : '#9ca3af'),
+                      ? (actualTheme === 'light' ? '#111827' : '#ffffff')
+                      : (actualTheme === 'light' ? '#6b7280' : '#9ca3af'),
                     borderTop: 'none',
                     borderLeft: 'none',
                     borderRight: 'none',
-                    borderBottom: activeTab === id ? `2px solid ${theme === 'light' ? '#3b82f6' : '#60a5fa'}` : `2px solid transparent`,
+                    borderBottom: activeTab === id ? `2px solid ${actualTheme === 'light' ? '#3b82f6' : '#60a5fa'}` : `2px solid transparent`,
                     cursor: 'pointer',
                     transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
                     transform: 'translateY(0)',
@@ -549,22 +568,25 @@ export const DevToolbarSection: React.FC<{
   children: ReactNode;
   className?: string;
   theme?: 'light' | 'dark';
-}> = ({ title, children, className = '', theme = 'dark' }) => (
-  <div style={{ marginBottom: '12px' }} className={className}>
-    {title && (
-      <div style={{ 
-        ...typography.sectionTitle,
-        marginBottom: '6px',
-        color: theme === 'light' ? '#6b7280' : '#9ca3af'
-      }}>
-        {title}
+}> = ({ title, children, className = '', theme = 'dark' }) => {
+  const effectiveTheme = theme; // Direct use since these are simple utility components
+  return (
+    <div style={{ marginBottom: '12px' }} className={className}>
+      {title && (
+        <div style={{ 
+          ...typography.sectionTitle,
+          marginBottom: '6px',
+          color: effectiveTheme === 'light' ? '#6b7280' : '#9ca3af'
+        }}>
+          {title}
+        </div>
+      )}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+        {children}
       </div>
-    )}
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-      {children}
     </div>
-  </div>
-);
+  );
+};
 
 export const DevToolbarButton: React.FC<{
   onClick: () => void;
@@ -650,14 +672,17 @@ export const DevToolbarInfo: React.FC<{
   value: string | number | boolean;
   className?: string;
   theme?: 'light' | 'dark';
-}> = ({ label, value, className = '', theme = 'dark' }) => (
-  <div style={{ 
-    ...typography.info, 
-    color: theme === 'light' ? '#374151' : '#e5e7eb' 
-  }} className={className}>
-    <span style={{ color: theme === 'light' ? '#6b7280' : '#9ca3af' }}>{label}:</span> {String(value)}
-  </div>
-);
+}> = ({ label, value, className = '', theme = 'dark' }) => {
+  const effectiveTheme = theme;
+  return (
+    <div style={{ 
+      ...typography.info, 
+      color: effectiveTheme === 'light' ? '#374151' : '#e5e7eb' 
+    }} className={className}>
+      <span style={{ color: effectiveTheme === 'light' ? '#6b7280' : '#9ca3af' }}>{label}:</span> {String(value)}
+    </div>
+  );
+};
 
 export const DevToolbarToggle: React.FC<{
   checked: boolean;
@@ -665,44 +690,47 @@ export const DevToolbarToggle: React.FC<{
   label?: string;
   className?: string;
   theme?: 'light' | 'dark';
-}> = ({ checked, onChange, label, className = '', theme = 'dark' }) => (
-  <div style={{ 
-    display: 'flex', 
-    alignItems: 'center', 
-    justifyContent: 'space-between',
-    gap: '8px',
-    ...typography.info 
-  }} className={className}>
-    {label && (
-      <span style={{ color: theme === 'light' ? '#6b7280' : '#9ca3af', flex: 1 }}>{label}</span>
-    )}
-    <button
-      onClick={() => onChange(!checked)}
-      style={{
-        position: 'relative',
-        display: 'inline-flex',
-        alignItems: 'center',
-        height: '20px',
-        width: '36px',
-        borderRadius: '9999px',
-        backgroundColor: checked ? '#3b82f6' : '#4b5563',
-        transition: 'background-color 0.2s',
-        border: 'none',
-        cursor: 'pointer',
-        padding: 0,
-      }}
-    >
-      <span
+}> = ({ checked, onChange, label, className = '', theme = 'dark' }) => {
+  const effectiveTheme = theme;
+  return (
+    <div style={{ 
+      display: 'flex', 
+      alignItems: 'center', 
+      justifyContent: 'space-between',
+      gap: '8px',
+      ...typography.info 
+    }} className={className}>
+      {label && (
+        <span style={{ color: effectiveTheme === 'light' ? '#6b7280' : '#9ca3af', flex: 1 }}>{label}</span>
+      )}
+      <button
+        onClick={() => onChange(!checked)}
         style={{
-          display: 'inline-block',
-          height: '14px',
-          width: '14px',
-          borderRadius: '50%',
-          backgroundColor: 'white',
-          transition: 'transform 0.2s',
-          transform: checked ? 'translateX(18px)' : 'translateX(3px)',
+          position: 'relative',
+          display: 'inline-flex',
+          alignItems: 'center',
+          height: '20px',
+          width: '36px',
+          borderRadius: '9999px',
+          backgroundColor: checked ? '#3b82f6' : '#4b5563',
+          transition: 'background-color 0.2s',
+          border: 'none',
+          cursor: 'pointer',
+          padding: 0,
         }}
-      />
-    </button>
-  </div>
-);
+      >
+        <span
+          style={{
+            display: 'inline-block',
+            height: '14px',
+            width: '14px',
+            borderRadius: '50%',
+            backgroundColor: 'white',
+            transition: 'transform 0.2s',
+            transform: checked ? 'translateX(18px)' : 'translateX(3px)',
+          }}
+        />
+      </button>
+    </div>
+  );
+};
