@@ -22,8 +22,10 @@ const sections = [
   { id: 'getting-started', title: 'Getting Started', icon: Rocket, file: 'getting-started.md' },
   { id: 'api-reference', title: 'API Reference', icon: Code, file: 'api-reference.md' },
   { id: 'configuration', title: 'Configuration', icon: Settings, file: 'configuration.md' },
+  { id: 'environment-control', title: 'Environment Control', icon: Settings, file: 'environment-control.md' },
   { id: 'examples', title: 'Examples', icon: Lightbulb, file: 'examples.md' },
   { id: 'advanced', title: 'Advanced', icon: Layers, file: 'advanced.md' },
+  { id: 'troubleshooting', title: 'Troubleshooting', icon: Layers, file: 'troubleshooting.md' },
 ]
 
 function CodeBlock({ code, language, theme }: { code: string; language: string; theme: 'light' | 'dark' }) {

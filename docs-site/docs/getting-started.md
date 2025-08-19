@@ -375,6 +375,6 @@ Ensure you have the proper TypeScript setup:
 
 ## Next Steps
 
-- Explore [API Reference](./api-reference.md) for all available props and options
-- Check out [Examples](./examples.md) for common use cases
-- Learn about [Advanced Features](./advanced.md) like pane mode and keyboard shortcuts
+- Explore **API Reference** for all available props and options
+- Check out **Examples** for common use cases
+- Learn about **Advanced Features** like pane mode and keyboard shortcuts

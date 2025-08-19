@@ -53,13 +53,15 @@ That's it! The toolbar will appear as a bug icon in the bottom-right corner of y
 
 ## Quick Links
 
-- [Getting Started](./getting-started.md) - More setup options
-- [API Reference](./api-reference.md) - All props and components
-- [Configuration](./configuration.md) - Positioning and themes
-- [Environment Control](./environment-control.md) - Managing visibility
-- [Examples](./examples.md) - Common patterns
-- [Advanced](./advanced.md) - Pane mode, keyboard shortcuts
-- [Troubleshooting](./troubleshooting.md) - Common issues and solutions
+- **Getting Started** - More setup options
+- **API Reference** - All props and components
+- **Configuration** - Positioning and themes
+- **Environment Control** - Managing visibility
+- **Examples** - Common patterns
+- **Advanced** - Pane mode, keyboard shortcuts
+- **Troubleshooting** - Common issues and solutions
+
+*Use the sidebar navigation to explore these sections.*
 
 ## Key Features
 

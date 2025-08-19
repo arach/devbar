@@ -15,8 +15,10 @@ async function loadDocs() {
     'getting-started.md': '',
     'api-reference.md': '',
     'configuration.md': '',
+    'environment-control.md': '',
     'examples.md': '',
-    'advanced.md': ''
+    'advanced.md': '',
+    'troubleshooting.md': ''
   }
   
   for (const file of Object.keys(files)) {
