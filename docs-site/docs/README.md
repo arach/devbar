@@ -56,6 +56,7 @@ That's it! The toolbar will appear as a bug icon in the bottom-right corner of y
 - [Getting Started](./getting-started.md) - More setup options
 - [API Reference](./api-reference.md) - All props and components
 - [Configuration](./configuration.md) - Positioning and themes
+- [Environment Control](./environment-control.md) - Managing visibility
 - [Examples](./examples.md) - Common patterns
 - [Advanced](./advanced.md) - Pane mode, keyboard shortcuts
 - [Troubleshooting](./troubleshooting.md) - Common issues and solutions

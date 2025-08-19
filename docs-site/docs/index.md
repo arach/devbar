@@ -11,6 +11,7 @@ A beautiful, minimal development toolbar for React applications with Chrome DevT
 - [Getting Started](./getting-started.md) - Installation and basic setup
 - [API Reference](./api-reference.md) - Complete component and hook documentation
 - [Configuration](./configuration.md) - Positioning, themes, and customization options
+- [Environment Control](./environment-control.md) - Managing visibility across environments
 - [Examples](./examples.md) - Common use cases and recipes
 - [Advanced Features](./advanced.md) - Pane mode, keyboard shortcuts, and more
 - [Troubleshooting](./troubleshooting.md) - Common issues and solutions
