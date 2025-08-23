@@ -1,5 +1,9 @@
 # @arach/devbar
 
+[![npm version](https://img.shields.io/npm/v/@arach/devbar.svg)](https://www.npmjs.com/package/@arach/devbar)
+[![Build Status](https://github.com/arach/devbar/workflows/CI/badge.svg)](https://github.com/arach/devbar/actions)
+[![Bundle Size](https://img.shields.io/bundlephobia/minzip/@arach/devbar)](https://bundlephobia.com/package/@arach/devbar)
+
 A beautiful, minimal, and highly customizable development toolbar for React applications. Perfect for adding debug panels, state inspection, and development utilities to your projects.
 
 ## Features

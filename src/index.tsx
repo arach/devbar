@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, ReactNode, ComponentType } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, ReactNode, ComponentType } from 'react';
 import { Bug, X, Maximize2, Minimize2 } from 'lucide-react';
 
 // Typography system with Inconsolata
@@ -69,7 +69,7 @@ export interface DevToolbarProps {
   defaultOpen?: boolean;  // Control initial open state
 }
 
-export const DevToolbar: React.FC<DevToolbarProps> = ({
+const DevToolbarComponent: React.FC<DevToolbarProps> = ({
   tabs,
   position = 'bottom-right',
   defaultTab,
@@ -79,8 +79,8 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
   environment,  // Let consumer explicitly set environment
   customIcon,
   title = 'Dev',
-  width = '320px',  // Slightly wider for better content fit
-  maxHeight = '400px',  // Taller to accommodate most content without scrolling
+  width = '280px',  // Match Pomo window width
+  maxHeight = '220px',  // Very compact with 2-column layout
   defaultPaneHeight = '300px',
   defaultOpen = false,
 }) => {
@@ -189,96 +189,114 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
     return null;
   }
   
-  // Button positioned with consistent spacing
+  // Button positioned with minimal spacing (8px from edges)
   const buttonStyles: Record<string, React.CSSProperties> = {
     'bottom-right': { 
       position: 'fixed' as const, 
-      bottom: '24px',
-      right: '24px',
+      bottom: '8px',
+      right: '8px',
       zIndex: 9999,
     },
     'bottom-left': { 
       position: 'fixed' as const, 
-      bottom: '24px',
-      left: '24px',
+      bottom: '8px',
+      left: '8px',
       zIndex: 9999,
     },
     'top-right': { 
       position: 'fixed' as const, 
-      top: '24px',
-      right: '24px',
+      top: '8px',
+      right: '8px',
       zIndex: 9999,
     },
     'top-left': { 
       position: 'fixed' as const, 
-      top: '24px',
-      left: '24px',
+      top: '8px',
+      left: '8px',
       zIndex: 9999,
     },
     'pane': { 
       position: 'fixed' as const, 
-      bottom: '24px',
-      right: '24px',
+      bottom: '8px',
+      right: '8px',
       zIndex: 9999,
     },
   };
   
-  // Panel positioned at corner with button overlapping
+  // Panel positioned at corner with minimal spacing to match button
   const panelStyles: Record<string, React.CSSProperties> = {
     'bottom-right': { 
       position: 'fixed' as const, 
-      bottom: '24px', 
-      right: '24px',
+      bottom: '8px', 
+      right: '8px',
       transform: isExpanded ? 'none' : 'none',
       transformOrigin: 'bottom right',
-      backgroundColor: actualTheme === 'light' ? '#ffffff' : '#111827', // Solid backgrounds
-      borderRadius: '16px',
+      backgroundColor: actualTheme === 'light' ? 'rgba(255, 255, 255, 0.98)' : 'rgba(26, 26, 26, 0.98)', // Match Pomo's rgb(26, 26, 26)
+      backdropFilter: 'blur(12px)',
+      borderRadius: '10px', // Match Pomo's border radius
+      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)', // Similar shadow to Pomo
     },
     'bottom-left': { 
       position: 'fixed' as const, 
-      bottom: '24px', 
-      left: '24px',
+      bottom: '8px', 
+      left: '8px',
       transform: isExpanded ? 'none' : 'none',
       transformOrigin: 'bottom left',
-      backgroundColor: actualTheme === 'light' ? '#ffffff' : '#111827',
-      borderRadius: '16px',
+      backgroundColor: actualTheme === 'light' ? 'rgba(255, 255, 255, 0.98)' : 'rgba(26, 26, 26, 0.98)',
+      backdropFilter: 'blur(12px)',
+      borderRadius: '10px',
+      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
     },
     'top-right': { 
       position: 'fixed' as const, 
-      top: '24px', 
-      right: '24px',
+      top: '8px', 
+      right: '8px',
       transform: isExpanded ? 'none' : 'none',
       transformOrigin: 'top right',
-      backgroundColor: actualTheme === 'light' ? '#ffffff' : '#111827',
-      borderRadius: '16px',
+      backgroundColor: actualTheme === 'light' ? 'rgba(255, 255, 255, 0.98)' : 'rgba(26, 26, 26, 0.98)',
+      backdropFilter: 'blur(12px)',
+      borderRadius: '10px',
+      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
     },
     'top-left': { 
       position: 'fixed' as const, 
-      top: '24px', 
-      left: '24px',
+      top: '8px', 
+      left: '8px',
       transform: isExpanded ? 'none' : 'none',
       transformOrigin: 'top left',
-      backgroundColor: actualTheme === 'light' ? '#ffffff' : '#111827',
-      borderRadius: '16px',
+      backgroundColor: actualTheme === 'light' ? 'rgba(255, 255, 255, 0.98)' : 'rgba(26, 26, 26, 0.98)',
+      backdropFilter: 'blur(12px)',
+      borderRadius: '10px',
+      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
     },
     'pane': { 
       position: 'fixed' as const, 
       bottom: isCollapsed ? '-100%' : '0',
       left: '0',
       right: '0',
-      backgroundColor: actualTheme === 'light' ? '#ffffff' : '#111827',
+      backgroundColor: actualTheme === 'light' ? 'rgba(255, 255, 255, 0.98)' : 'rgba(26, 26, 26, 0.98)',
+      backdropFilter: 'blur(12px)',
       borderRadius: '0',
-      borderTop: `0.5px solid ${actualTheme === 'light' ? '#e5e7eb' : '#374151'}`,
-      boxShadow: '0 -4px 12px rgba(0, 0, 0, 0.15)',
+      borderTop: `0.5px solid ${actualTheme === 'light' ? 'rgba(229, 231, 235, 0.5)' : 'rgba(255, 255, 255, 0.08)'}`,
+      boxShadow: '0 -8px 32px rgba(0, 0, 0, 0.3)',
     },
   };
   
-  // Theme classes (fully opaque backgrounds)
+  // Theme classes - removed since we're using inline styles for background
   const themeClasses = actualTheme === 'light' 
-    ? 'bg-white text-gray-900'
-    : 'bg-gray-900 dark:bg-black text-white';
+    ? 'text-gray-900'
+    : 'text-white';
   
   const activeTabContent = tabs.find(tab => tab.id === activeTab);
+  
+  // Lazy render tab content only when tab is active and panel is open
+  const renderTabContent = useCallback(() => {
+    if (isCollapsed || !activeTabContent) return null;
+    
+    return typeof activeTabContent.content === 'function' 
+      ? activeTabContent.content() 
+      : activeTabContent.content;
+  }, [isCollapsed, activeTabContent]);
   
   return (
     <>
@@ -359,7 +377,7 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
                overflow: 'hidden',
                zIndex: 9998,
                border: position !== 'pane' 
-                 ? `1px solid ${actualTheme === 'light' ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.1)'}`
+                 ? `1px solid ${actualTheme === 'light' ? 'rgba(0, 0, 0, 0.08)' : 'rgba(255, 255, 255, 0.05)'}`
                  : 'none',
              }}>
           {/* Resize handle for pane mode */}
@@ -390,11 +408,11 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
             alignItems: 'center',
             justifyContent: 'space-between',
             borderBottom: `1px solid ${actualTheme === 'light' ? '#e5e7eb' : 'rgba(55, 65, 81, 0.5)'}`,
-            paddingLeft: '10px',
-            paddingRight: '6px',
-            paddingTop: '4px',
-            paddingBottom: '4px',
-            height: '28px',
+            paddingLeft: '8px',
+            paddingRight: '4px',
+            paddingTop: '3px',
+            paddingBottom: '3px',
+            height: '24px',
             flexShrink: 0,
           }}>
             <h3 style={{ 
@@ -482,7 +500,7 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
             <div style={{ 
               display: 'flex',
               borderBottom: `1px solid ${actualTheme === 'light' ? '#e5e7eb' : 'rgba(55, 65, 81, 0.5)'}`,
-              height: '36px',
+              height: '30px',
               flexShrink: 0,
             }}>
               {tabs.map(({ id, label, icon }) => {
@@ -559,12 +577,8 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
           
           {/* Content - Fixed height with scrolling */}
           <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', minHeight: 0 }}>
-            <div style={{ padding: '12px' }}>
-              {activeTabContent && (
-                typeof activeTabContent.content === 'function' 
-                  ? activeTabContent.content() 
-                  : activeTabContent.content
-              )}
+            <div style={{ padding: '8px' }}>
+              {renderTabContent()}
             </div>
           </div>
         </div>
@@ -572,6 +586,9 @@ export const DevToolbar: React.FC<DevToolbarProps> = ({
     </>
   );
 };
+
+// Export with React.memo for performance optimization
+export const DevToolbar = React.memo(DevToolbarComponent);
 
 // Export a simple hook for creating toolbar tabs
 export const useDevToolbarTab = (
@@ -592,17 +609,17 @@ export const DevToolbarSection: React.FC<{
 }> = ({ title, children, className = '', theme = 'dark' }) => {
   const effectiveTheme = theme; // Direct use since these are simple utility components
   return (
-    <div style={{ marginBottom: '12px' }} className={className}>
+    <div style={{ marginBottom: '8px' }} className={className}>
       {title && (
         <div style={{ 
           ...typography.sectionTitle,
-          marginBottom: '6px',
+          marginBottom: '4px',
           color: effectiveTheme === 'light' ? '#6b7280' : '#9ca3af'
         }}>
           {title}
         </div>
       )}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
         {children}
       </div>
     </div>

@@ -23,10 +23,18 @@
   },
   "keywords": [
     "react",
-    "dev-tools",
-    "toolbar",
+    "devtools",
     "debugging",
-    "development"
+    "toolbar",
+    "development",
+    "developer-tools",
+    "debug-toolbar",
+    "react-component",
+    "dev-tools",
+    "react-devtools",
+    "debug",
+    "inspector",
+    "development-tools"
   ],
   "author": "arach",
   "license": "MIT",

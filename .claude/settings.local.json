@@ -41,7 +41,17 @@
       "Bash(npx express:*)",
       "Bash(chmod:*)",
       "Bash(./test-prod.sh:*)",
-      "Bash(gh run list:*)"
+      "Bash(gh run list:*)",
+      "Bash(NEXT_PUBLIC_BASE_PATH='/devbar/docs' pnpm build)",
+      "Bash(sed:*)",
+      "Bash(pkill:*)",
+      "Bash(true pnpm build)",
+      "Bash(true)",
+      "Bash(git reset:*)",
+      "Bash(/dev/null)",
+      "Bash(cp:*)",
+      "Bash(lsof:*)",
+      "Bash(git restore:*)"
     ],
     "deny": [],
     "ask": [],
