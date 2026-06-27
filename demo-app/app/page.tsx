@@ -26,16 +26,16 @@ export default function DemoPage() {
       label: 'Overview',
       icon: Layers,
       content: (
-        <div>
-          <DevToolbarSection title="Demo Stats" theme={theme}>
-            <DevToolbarInfo label="Theme" value={theme} theme={theme} />
-            <DevToolbarInfo label="Position" value={position} theme={theme} />
-            <DevToolbarInfo label="Button Clicks" value={clicks} theme={theme} />
-            <DevToolbarInfo label="Timestamp" value={new Date().toLocaleTimeString()} theme={theme} />
+        <>
+          <DevToolbarSection title="Demo Stats">
+            <DevToolbarInfo label="Theme" value={theme} />
+            <DevToolbarInfo label="Position" value={position} />
+            <DevToolbarInfo label="Button Clicks" value={clicks} />
+            <DevToolbarInfo label="Timestamp" value={new Date().toLocaleTimeString()} />
           </DevToolbarSection>
           
-          <DevToolbarSection title="Quick Actions" theme={theme}>
-            <div className="flex gap-2 flex-wrap">
+          <DevToolbarSection title="Quick Actions">
+            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
               <DevToolbarButton onClick={() => setClicks(c => c + 10)} variant="primary">
                 +10 Clicks
               </DevToolbarButton>
@@ -53,7 +53,7 @@ export default function DemoPage() {
               </DevToolbarButton>
             </div>
           </DevToolbarSection>
-        </div>
+        </>
       )
     },
     {
@@ -61,43 +61,38 @@ export default function DemoPage() {
       label: 'Theme',
       icon: Palette,
       content: (
-        <div>
-          <DevToolbarSection title="Appearance" theme={theme}>
+        <>
+          <DevToolbarSection title="Appearance">
             <DevToolbarToggle 
               checked={theme === 'dark'}
               onChange={(checked) => setTheme(checked ? 'dark' : 'light')}
               label="Dark Mode"
-              theme={theme}
             />
             <DevToolbarToggle 
               checked={compactMode}
               onChange={setCompactMode}
               label="Compact Mode"
-              theme={theme}
             />
             <DevToolbarToggle 
               checked={animations}
               onChange={setAnimations}
               label="Animations"
-              theme={theme}
             />
           </DevToolbarSection>
           
-          <DevToolbarSection title="Behavior" theme={theme}>
+          <DevToolbarSection title="Behavior">
             <DevToolbarToggle 
               checked={soundEffects}
               onChange={setSoundEffects}
               label="Sound Effects"
-              theme={theme}
             />
             <DevToolbarToggle 
               checked={autoRefresh}
               onChange={setAutoRefresh}
               label="Auto Refresh"
-              theme={theme}
             />
           </DevToolbarSection>
-        </div>
+        </>
       )
     },
     {
@@ -105,11 +100,11 @@ export default function DemoPage() {
       label: 'Settings',
       icon: Settings,
       content: (
-        <DevToolbarSection title="Configuration" theme={theme}>
-          <DevToolbarInfo label="Version" value="0.2.0" theme={theme} />
-          <DevToolbarInfo label="React" value="19.1.0" theme={theme} />
-          <DevToolbarInfo label="Next.js" value="15.4.6" theme={theme} />
-          <DevToolbarInfo label="Build" value="Production" theme={theme} />
+        <DevToolbarSection title="Configuration">
+          <DevToolbarInfo label="Version" value="0.2.0" />
+          <DevToolbarInfo label="React" value="19.1.0" />
+          <DevToolbarInfo label="Next.js" value="15.4.6" />
+          <DevToolbarInfo label="Build" value="Production" />
         </DevToolbarSection>
       )
     },
@@ -118,12 +113,12 @@ export default function DemoPage() {
       label: 'Console',
       icon: Terminal,
       content: (
-        <DevToolbarSection title="Activity Log" theme={theme}>
+        <DevToolbarSection title="Activity Log">
           <div style={{ fontFamily: 'monospace', fontSize: '0.7rem', lineHeight: 1.4 }}>
-            <div style={{ color: theme === 'light' ? '#6b7280' : '#9ca3af' }}>[{new Date().toLocaleTimeString()}] Page loaded</div>
-            <div style={{ color: theme === 'light' ? '#2563eb' : '#60a5fa' }}>[{new Date().toLocaleTimeString()}] Theme: {theme}</div>
-            <div style={{ color: theme === 'light' ? '#059669' : '#10b981' }}>[{new Date().toLocaleTimeString()}] Position: {position}</div>
-            <div style={{ color: theme === 'light' ? '#d97706' : '#fbbf24' }}>[{new Date().toLocaleTimeString()}] Clicks: {clicks}</div>
+            <div style={{ color: '#a1a1aa' }}>[{new Date().toLocaleTimeString()}] Page loaded</div>
+            <div style={{ color: '#d4d4d8' }}>[{new Date().toLocaleTimeString()}] Theme: {theme}</div>
+            <div style={{ color: '#a1a1aa' }}>[{new Date().toLocaleTimeString()}] Position: {position}</div>
+            <div style={{ color: '#d4d4d8' }}>[{new Date().toLocaleTimeString()}] Clicks: {clicks}</div>
           </div>
         </DevToolbarSection>
       )
@@ -133,11 +128,11 @@ export default function DemoPage() {
       label: 'Performance',
       icon: Activity,
       content: (
-        <DevToolbarSection title="Metrics" theme={theme}>
-          <DevToolbarInfo label="FPS" value="60" theme={theme} />
-          <DevToolbarInfo label="Memory" value="12.3 MB" theme={theme} />
-          <DevToolbarInfo label="CPU" value="2%" theme={theme} />
-          <DevToolbarInfo label="Network" value="Idle" theme={theme} />
+        <DevToolbarSection title="Metrics">
+          <DevToolbarInfo label="FPS" value="60" />
+          <DevToolbarInfo label="Memory" value="12.3 MB" />
+          <DevToolbarInfo label="CPU" value="2%" />
+          <DevToolbarInfo label="Network" value="Idle" />
         </DevToolbarSection>
       )
     },
@@ -147,7 +142,17 @@ export default function DemoPage() {
       icon: Database,
       content: (
         <DevToolbarSection title="Application State">
-          <pre className="text-xs bg-gray-900 p-2 rounded overflow-x-auto">
+          <pre style={{
+            margin: 0,
+            fontSize: '0.7rem',
+            lineHeight: 1.45,
+            background: 'linear-gradient(160deg, rgba(255, 255, 255, 0.08) 0%, rgba(0, 0, 0, 0.28) 100%)',
+            border: '1px solid rgba(255, 255, 255, 0.12)',
+            borderRadius: '3px',
+            padding: '8px',
+            overflowX: 'auto',
+            boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.12)',
+          }}>
 {JSON.stringify({ 
   theme, 
   position, 
@@ -163,24 +168,24 @@ export default function DemoPage() {
       label: 'About',
       icon: Info,
       content: (
-        <div>
+        <>
           <DevToolbarSection title="@arach/devbar">
-            <div className="text-xs space-y-2">
-              <p>A minimal, beautiful development toolbar for React applications.</p>
-              <p className="text-gray-400">Created with ❤️ by arach</p>
+            <div style={{ fontSize: '0.75rem', lineHeight: 1.5, display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <p style={{ margin: 0 }}>A minimal, beautiful development toolbar for React applications.</p>
+              <p style={{ margin: 0, opacity: 0.65 }}>Created with ❤️ by arach</p>
             </div>
           </DevToolbarSection>
           
           <DevToolbarSection title="Features">
-            <ul className="text-xs space-y-1">
-              <li>✓ 5 positioning modes</li>
-              <li>✓ Chrome DevTools-style pane</li>
-              <li>✓ Resizable with drag handle</li>
-              <li>✓ Light/Dark theme support</li>
-              <li>✓ Keyboard shortcuts (ESC)</li>
+            <ul style={{ margin: 0, paddingLeft: '16px', fontSize: '0.75rem', lineHeight: 1.6 }}>
+              <li>5 positioning modes</li>
+              <li>Chrome DevTools-style pane</li>
+              <li>Resizable with drag handle</li>
+              <li>Light/Dark theme support</li>
+              <li>Keyboard shortcuts (ESC)</li>
             </ul>
           </DevToolbarSection>
-        </div>
+        </>
       )
     }
   ]
@@ -470,7 +475,8 @@ export default function DemoPage() {
         title="Demo"
         hideInProduction={false}
         defaultPaneHeight="320px"
-        defaultOpen={isToolbarOpen}
+        open={isToolbarOpen}
+        onOpenChange={setIsToolbarOpen}
       />
     </div>
   )
