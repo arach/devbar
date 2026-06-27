@@ -74,83 +74,60 @@ const typography = {
 
 const palette = {
   dark: {
-    panel: 'rgba(18, 18, 20, 0.58)',
-    panelGradient: 'linear-gradient(155deg, rgba(120, 120, 128, 0.18) 0%, rgba(39, 39, 42, 0.42) 38%, rgba(9, 9, 11, 0.72) 100%)',
-    header: 'rgba(255, 255, 255, 0.04)',
-    headerGradient: 'linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.02) 100%)',
-    content: 'rgba(0, 0, 0, 0.22)',
-    contentGradient: 'linear-gradient(180deg, rgba(0, 0, 0, 0.12) 0%, rgba(0, 0, 0, 0.28) 100%)',
-    border: 'rgba(255, 255, 255, 0.1)',
-    borderStrong: 'rgba(255, 255, 255, 0.18)',
-    glassBorder: 'rgba(255, 255, 255, 0.14)',
+    panel: '#18181b',
+    header: '#1c1c1f',
+    content: '#121214',
+    border: 'rgba(255, 255, 255, 0.08)',
+    borderStrong: 'rgba(255, 255, 255, 0.14)',
+    glassBorder: 'rgba(255, 255, 255, 0.1)',
     text: '#f4f4f5',
-    textMuted: '#c4c4cc',
-    textDim: '#8b8b96',
-    tabActive: 'rgba(255, 255, 255, 0.09)',
-    tabActiveGradient: 'linear-gradient(180deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.04) 100%)',
-    tabHover: 'rgba(255, 255, 255, 0.05)',
-    tabIndicator: '#e4e4e7',
-    headerDot: '#d4d4d8',
-    card: 'rgba(255, 255, 255, 0.04)',
-    cardGradient: 'linear-gradient(160deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.02) 55%, rgba(0, 0, 0, 0.12) 100%)',
-    cardBorder: 'rgba(255, 255, 255, 0.12)',
-    sheen: 'inset 0 1px 0 rgba(255, 255, 255, 0.18), inset 0 -1px 0 rgba(0, 0, 0, 0.28)',
-    shadow: '0 28px 70px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.06)',
-    button: 'rgba(255, 255, 255, 0.06)',
-    buttonGradient: 'linear-gradient(180deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.04) 48%, rgba(0, 0, 0, 0.12) 100%)',
-    buttonBorder: 'rgba(255, 255, 255, 0.14)',
+    textMuted: '#a1a1aa',
+    textDim: '#71717a',
+    tabActive: 'rgba(255, 255, 255, 0.06)',
+    tabHover: 'rgba(255, 255, 255, 0.03)',
+    tabIndicator: '#d4d4d8',
+    headerDot: '#71717a',
+    card: '#1f1f23',
+    cardBorder: 'rgba(255, 255, 255, 0.08)',
+    shadow: '0 8px 24px rgba(0, 0, 0, 0.35)',
+    button: '#27272a',
+    buttonBorder: 'rgba(255, 255, 255, 0.1)',
     buttonText: '#f4f4f5',
-    fabGradient: 'linear-gradient(145deg, rgba(255, 255, 255, 0.16) 0%, rgba(82, 82, 91, 0.35) 45%, rgba(9, 9, 11, 0.75) 100%)',
-    fabShadow: '0 10px 28px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 0 0 1px rgba(255, 255, 255, 0.1)',
-    toggleOff: 'rgba(0, 0, 0, 0.35)',
-    toggleOn: 'rgba(255, 255, 255, 0.72)',
-    danger: 'rgba(127, 29, 29, 0.42)',
-    dangerGradient: 'linear-gradient(180deg, rgba(248, 113, 113, 0.22) 0%, rgba(127, 29, 29, 0.38) 100%)',
-    dangerBorder: 'rgba(248, 113, 113, 0.35)',
+    fabShadow: '0 2px 8px rgba(0, 0, 0, 0.3)',
+    toggleOff: '#3f3f46',
+    toggleOn: '#a1a1aa',
+    danger: '#3f1d1d',
+    dangerBorder: 'rgba(248, 113, 113, 0.3)',
     dangerText: '#fecaca',
   },
   light: {
-    panel: 'rgba(255, 255, 255, 0.58)',
-    panelGradient: 'linear-gradient(155deg, rgba(255, 255, 255, 0.92) 0%, rgba(244, 244, 245, 0.72) 42%, rgba(228, 228, 231, 0.55) 100%)',
-    header: 'rgba(255, 255, 255, 0.35)',
-    headerGradient: 'linear-gradient(180deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.35) 100%)',
-    content: 'rgba(255, 255, 255, 0.28)',
-    contentGradient: 'linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0%, rgba(244, 244, 245, 0.55) 100%)',
+    panel: '#ffffff',
+    header: '#f4f4f5',
+    content: '#fafafa',
     border: 'rgba(0, 0, 0, 0.08)',
-    borderStrong: 'rgba(0, 0, 0, 0.14)',
-    glassBorder: 'rgba(255, 255, 255, 0.65)',
+    borderStrong: 'rgba(0, 0, 0, 0.12)',
+    glassBorder: 'rgba(0, 0, 0, 0.1)',
     text: '#18181b',
     textMuted: '#52525b',
     textDim: '#71717a',
     tabActive: 'rgba(0, 0, 0, 0.04)',
-    tabActiveGradient: 'linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(244, 244, 245, 0.75) 100%)',
-    tabHover: 'rgba(0, 0, 0, 0.03)',
+    tabHover: 'rgba(0, 0, 0, 0.02)',
     tabIndicator: '#3f3f46',
     headerDot: '#a1a1aa',
-    card: 'rgba(255, 255, 255, 0.55)',
-    cardGradient: 'linear-gradient(160deg, rgba(255, 255, 255, 0.95) 0%, rgba(244, 244, 245, 0.7) 55%, rgba(228, 228, 231, 0.45) 100%)',
-    cardBorder: 'rgba(255, 255, 255, 0.8)',
-    sheen: 'inset 0 1px 0 rgba(255, 255, 255, 0.95), inset 0 -1px 0 rgba(0, 0, 0, 0.04)',
-    shadow: '0 24px 60px rgba(0, 0, 0, 0.14), 0 0 0 1px rgba(255, 255, 255, 0.7)',
-    button: 'rgba(255, 255, 255, 0.72)',
-    buttonGradient: 'linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(244, 244, 245, 0.82) 52%, rgba(228, 228, 231, 0.65) 100%)',
-    buttonBorder: 'rgba(0, 0, 0, 0.08)',
+    card: '#ffffff',
+    cardBorder: 'rgba(0, 0, 0, 0.08)',
+    shadow: '0 8px 24px rgba(0, 0, 0, 0.1)',
+    button: '#f4f4f5',
+    buttonBorder: 'rgba(0, 0, 0, 0.1)',
     buttonText: '#27272a',
-    fabGradient: 'linear-gradient(145deg, rgba(255, 255, 255, 0.98) 0%, rgba(228, 228, 231, 0.82) 48%, rgba(161, 161, 170, 0.55) 100%)',
-    fabShadow: '0 10px 28px rgba(0, 0, 0, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.95), 0 0 0 1px rgba(0, 0, 0, 0.06)',
-    toggleOff: 'rgba(0, 0, 0, 0.12)',
-    toggleOn: 'rgba(39, 39, 42, 0.82)',
-    danger: 'rgba(254, 242, 242, 0.82)',
-    dangerGradient: 'linear-gradient(180deg, rgba(254, 226, 226, 0.95) 0%, rgba(254, 202, 202, 0.75) 100%)',
-    dangerBorder: 'rgba(248, 113, 113, 0.45)',
+    fabShadow: '0 2px 8px rgba(0, 0, 0, 0.12)',
+    toggleOff: '#e4e4e7',
+    toggleOn: '#52525b',
+    danger: '#fef2f2',
+    dangerBorder: 'rgba(248, 113, 113, 0.4)',
     dangerText: '#991b1b',
   },
 } as const;
-
-const glassBlur: Pick<React.CSSProperties, 'backdropFilter' | 'WebkitBackdropFilter'> = {
-  backdropFilter: 'blur(22px) saturate(1.35)',
-  WebkitBackdropFilter: 'blur(22px) saturate(1.35)',
-};
 
 const getColors = (theme: DevToolbarTheme) => palette[theme];
 
@@ -473,10 +450,8 @@ const DevToolbarComponent: React.FC<DevToolbarProps> = ({
   
   const panelBase: React.CSSProperties = {
     backgroundColor: colors.panel,
-    backgroundImage: colors.panelGradient,
-    ...glassBlur,
     color: colors.text,
-    boxShadow: `${colors.shadow}, ${colors.sheen}`,
+    boxShadow: colors.shadow,
   };
 
   const panelStyles: Record<string, React.CSSProperties> = {
@@ -536,27 +511,17 @@ const DevToolbarComponent: React.FC<DevToolbarProps> = ({
           justifyContent: 'center',
           padding: '8px',
           backgroundColor: colors.panel,
-          backgroundImage: colors.fabGradient,
-          ...glassBlur,
           border: `1px solid ${colors.glassBorder}`,
           outline: 'none',
           cursor: 'pointer',
-          transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+          transition: 'opacity 0.15s ease',
           boxShadow: colors.fabShadow,
         }}
         onMouseEnter={(e) => {
-          e.currentTarget.style.transform = 'scale(1.08)';
-          e.currentTarget.style.boxShadow = `${colors.fabShadow}, 0 0 20px rgba(255, 255, 255, 0.08)`;
+          e.currentTarget.style.opacity = '0.85';
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.transform = 'scale(1)';
-          e.currentTarget.style.boxShadow = colors.fabShadow;
-        }}
-        onMouseDown={(e) => {
-          e.currentTarget.style.transform = 'scale(0.95)';
-        }}
-        onMouseUp={(e) => {
-          e.currentTarget.style.transform = 'scale(1)';
+          e.currentTarget.style.opacity = '1';
         }}
         title={isCollapsed ? `Show ${title.toLowerCase()} toolbar` : `Hide ${title.toLowerCase()} toolbar`}
         className={className}
@@ -627,9 +592,7 @@ const DevToolbarComponent: React.FC<DevToolbarProps> = ({
             alignItems: 'center',
             justifyContent: 'space-between',
             backgroundColor: colors.header,
-            backgroundImage: colors.headerGradient,
             borderBottom: `1px solid ${colors.border}`,
-            boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.12)',
             paddingLeft: '10px',
             paddingRight: '6px',
             height: isWide ? '32px' : '28px',
@@ -754,9 +717,7 @@ const DevToolbarComponent: React.FC<DevToolbarProps> = ({
                     minWidth: isWide ? 'max-content' : undefined,
                     ...typography.tab,
                     backgroundColor: isActive ? colors.tabActive : 'transparent',
-                    backgroundImage: isActive ? colors.tabActiveGradient : 'none',
                     color: isActive ? colors.text : colors.textDim,
-                    boxShadow: isActive ? colors.sheen : 'none',
                     borderTop: isWide
                       ? `1px solid ${isActive ? colors.glassBorder : 'transparent'}`
                       : 'none',
@@ -803,8 +764,6 @@ const DevToolbarComponent: React.FC<DevToolbarProps> = ({
             overflowX: 'hidden',
             minHeight: 0,
             backgroundColor: colors.content,
-            backgroundImage: colors.contentGradient,
-            boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.04)',
           }}>
             <DevToolbarContext.Provider value={toolbarContext}>
               <div style={{
@@ -855,12 +814,9 @@ export const DevToolbarSection: React.FC<{
       className={className}
       style={{
         backgroundColor: colors.card,
-        backgroundImage: colors.cardGradient,
-        ...glassBlur,
         border: `1px solid ${colors.cardBorder}`,
         borderRadius: '3px',
         padding: '10px 12px',
-        boxShadow: colors.sheen,
       }}
     >
       {title && (
@@ -893,19 +849,15 @@ export const DevToolbarButton: React.FC<{
 
   const neutralButton: React.CSSProperties = {
     backgroundColor: colors.button,
-    backgroundImage: colors.buttonGradient,
     border: `1px solid ${colors.buttonBorder}`,
     color: colors.buttonText,
-    boxShadow: colors.sheen,
   };
 
   const baseStyles = variant === 'danger'
     ? {
         backgroundColor: colors.danger,
-        backgroundImage: colors.dangerGradient,
         border: `1px solid ${colors.dangerBorder}`,
         color: colors.dangerText,
-        boxShadow: colors.sheen,
       }
     : neutralButton;
   const [isHovered, setIsHovered] = useState(false);
@@ -925,14 +877,8 @@ export const DevToolbarButton: React.FC<{
         justifyContent: 'center',
         fontWeight: 500,
         padding: size === 'xs' ? '5px 10px' : '7px 14px',
-        transition: 'transform 0.12s ease, filter 0.12s ease, box-shadow 0.12s ease',
-        transform: isPressed ? 'translateY(1px)' : isHovered ? 'translateY(-1px)' : 'none',
-        filter: isHovered ? 'brightness(1.06)' : 'none',
-        boxShadow: isPressed
-          ? 'inset 0 2px 4px rgba(0, 0, 0, 0.28)'
-          : isHovered
-          ? `${colors.sheen}, 0 6px 16px rgba(0, 0, 0, 0.2)`
-          : baseStyles.boxShadow,
+        transition: 'opacity 0.12s ease',
+        opacity: isPressed ? 0.8 : isHovered ? 0.9 : 1,
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => {
@@ -1018,12 +964,8 @@ export const DevToolbarToggle: React.FC<{
           width: '40px',
           borderRadius: '3px',
           backgroundColor: checked ? colors.toggleOn : colors.toggleOff,
-          backgroundImage: checked
-            ? 'linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(212, 212, 216, 0.85) 100%)'
-            : 'linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(0, 0, 0, 0.18) 100%)',
-          transition: 'background-color 0.2s ease, background-image 0.2s ease',
-          border: `1px solid ${colors.glassBorder}`,
-          boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.22)',
+          transition: 'background-color 0.15s ease',
+          border: `1px solid ${colors.border}`,
           cursor: 'pointer',
           padding: 0,
           flexShrink: 0,
@@ -1035,8 +977,8 @@ export const DevToolbarToggle: React.FC<{
             height: '16px',
             width: '16px',
             borderRadius: '2px',
-            backgroundImage: 'linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(228, 228, 231, 0.95) 100%)',
-            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.9)',
+            backgroundColor: '#fafafa',
+            boxShadow: '0 1px 2px rgba(0, 0, 0, 0.2)',
             transition: 'transform 0.2s ease',
             transform: checked ? 'translateX(20px)' : 'translateX(3px)',
           }}

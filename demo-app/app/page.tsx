@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { DevToolbar, DevToolbarSection, DevToolbarButton, DevToolbarInfo, DevToolbarToggle } from '@arach/devbar'
-import { Layers, Palette, Settings, Info, Activity, Terminal, Database } from 'lucide-react'
+import { Layers, Palette, Settings, Info, Activity, Terminal, Database, Sun, Moon, RotateCcw, RefreshCw } from 'lucide-react'
 
 // Configuration
 const DOCS_URL = process.env.NEXT_PUBLIC_DOCS_URL || 'http://localhost:3001'
@@ -49,7 +49,10 @@ export default function DemoPage() {
                 }} 
                 variant="success"
               >
-                🔄 Refresh
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                  <RefreshCw size={10} />
+                  Refresh
+                </span>
               </DevToolbarButton>
             </div>
           </DevToolbarSection>
@@ -146,12 +149,11 @@ export default function DemoPage() {
             margin: 0,
             fontSize: '0.7rem',
             lineHeight: 1.45,
-            background: 'linear-gradient(160deg, rgba(255, 255, 255, 0.08) 0%, rgba(0, 0, 0, 0.28) 100%)',
-            border: '1px solid rgba(255, 255, 255, 0.12)',
+            backgroundColor: 'rgba(0, 0, 0, 0.25)',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
             borderRadius: '3px',
             padding: '8px',
             overflowX: 'auto',
-            boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.12)',
           }}>
 {JSON.stringify({ 
   theme, 
@@ -172,7 +174,7 @@ export default function DemoPage() {
           <DevToolbarSection title="@arach/devbar">
             <div style={{ fontSize: '0.75rem', lineHeight: 1.5, display: 'flex', flexDirection: 'column', gap: '6px' }}>
               <p style={{ margin: 0 }}>A minimal, beautiful development toolbar for React applications.</p>
-              <p style={{ margin: 0, opacity: 0.65 }}>Created with ❤️ by arach</p>
+              <p style={{ margin: 0, opacity: 0.65 }}>Created by arach</p>
             </div>
           </DevToolbarSection>
           
@@ -373,10 +375,10 @@ export default function DemoPage() {
               }`}
             >
               <div className="relative z-10 text-center">
-                <div className={`text-3xl font-light mb-1 ${
+                <div className={`flex justify-center mb-1 ${
                   pageTheme === 'dark' ? 'text-slate-200' : 'text-gray-800'
                 }`}>
-                  {theme === 'light' ? '☀️' : '🌙'}
+                  {theme === 'light' ? <Sun size={28} strokeWidth={1.5} /> : <Moon size={28} strokeWidth={1.5} />}
                 </div>
                 <div className={`text-xs ${
                   pageTheme === 'dark' ? 'text-slate-500' : 'text-gray-500'
@@ -398,10 +400,10 @@ export default function DemoPage() {
               }`}
             >
               <div className="relative z-10 text-center">
-                <div className={`text-3xl font-light mb-1 ${
+                <div className={`flex justify-center mb-1 ${
                   pageTheme === 'dark' ? 'text-slate-200' : 'text-gray-800'
                 }`}>
-                  {pageTheme === 'light' ? '🌞' : '🌚'}
+                  {pageTheme === 'light' ? <Sun size={28} strokeWidth={1.5} /> : <Moon size={28} strokeWidth={1.5} />}
                 </div>
                 <div className={`text-xs ${
                   pageTheme === 'dark' ? 'text-slate-500' : 'text-gray-500'
@@ -423,9 +425,11 @@ export default function DemoPage() {
               }`}
             >
               <div className="relative z-10 text-center">
-                <div className={`text-3xl font-light mb-1 ${
+                <div className={`flex justify-center mb-1 ${
                   pageTheme === 'dark' ? 'text-slate-200' : 'text-gray-800'
-                }`}>↺</div>
+                }`}>
+                  <RotateCcw size={28} strokeWidth={1.5} />
+                </div>
                 <div className={`text-xs ${
                   pageTheme === 'dark' ? 'text-slate-500' : 'text-gray-500'
                 }`}>Reset</div>
@@ -443,7 +447,7 @@ export default function DemoPage() {
             <p className={`text-sm font-light ${
               pageTheme === 'dark' ? 'text-slate-600' : 'text-gray-500'
             }`}>
-              Look for the bug icon 🐛 {position === 'pane' ? 'in the bottom-right corner' : `in the ${position.replace('-', ' ')}`}
+              Look for the bug icon {position === 'pane' ? 'in the bottom-right corner' : `in the ${position.replace('-', ' ')}`}
             </p>
             {position === 'pane' && (
               <p className={`text-sm font-light ${
